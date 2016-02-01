@@ -8,6 +8,7 @@ var watchify = require('watchify');
 var babel = require('babelify');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
+var exit = require('gulp-exit');
 
 function compile(watch) {
   var bundler = watchify(browserify('./source/space/space.js', { debug: true }).transform(babel));
@@ -15,7 +16,7 @@ function compile(watch) {
   function rebundle() {
     lint();
 
-    bundler.bundle()
+    var bundle = bundler.bundle()
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source('space.js'))
       .pipe(buffer())
@@ -23,6 +24,10 @@ function compile(watch) {
       //.pipe(sourcemaps.write('./'))
       .pipe(uglify())
       .pipe(gulp.dest('public/javascripts'));
+
+    if(!watch) {
+      bundle.pipe(exit());
+    }
   }
 
   if (watch) {
