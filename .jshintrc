@@ -1,0 +1,14 @@
+{
+  "esnext": true,
+  "curly": true,
+  "unused": true,
+  "undef": true,
+  "globals": {
+  	"document": true,
+  	"window": true,
+  	"console": true,
+  	"requestAnimationFrame": true,
+    "Float32Array": true,
+  	"THREE": true
+  }
+}
