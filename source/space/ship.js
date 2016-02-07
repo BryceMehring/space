@@ -12,25 +12,25 @@ export class Ship extends THREE.Object3D {
 
     this.userData = {
       sprite: params.sprite || new Sprite('ship', THREE.Math.randInt(11, 15)),
-      speed: params.speed || THREE.Math.randFloat(0.008, 0.01)
+      speed: params.speed || THREE.Math.randFloat(0.5, 2)
     };
 
     this.add(this.userData.sprite);
   }
 
-  update() {
+  update(delta) {
     let dirVector = new THREE.Vector3(-Math.sin(this.rotation.z), Math.cos(this.rotation.z), 0);
-    dirVector.multiplyScalar(this.userData.speed);
+    dirVector.multiplyScalar(this.userData.speed * delta);
 
     this.position.add(dirVector);
 
     // TODO: do not hard code this position clamp
-    if(this.position.x >= 20 || this.position.x <= -20) {
-      this.position.x = -this.position.x;
+    if(this.position.x > 20 || this.position.x < -20) {
+      this.position.x = 20 * (this.position.x > 0 ? -1 : 1);
     }
 
-    if(this.position.y >= 20 || this.position.y <= -20) {
-      this.position.y = -this.position.y;
+    if(this.position.y > 20 || this.position.y < -20) {
+      this.position.y = 20 * (this.position.y > 0 ? -1 : 1);
     }
   }
 }

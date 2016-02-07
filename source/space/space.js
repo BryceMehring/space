@@ -27,18 +27,20 @@ export class Space {
       window.setInterval(updateIndex, 2000, station, 1, 3);
     });
 
+    this.clock = new THREE.Clock(true);
     this.animate();
   }
 
   animate() {
     let space = this;
+    let delta = this.clock.getDelta();
     requestAnimationFrame(function() {
       space.animate();
     });
-    this.render();
+    this.render(delta);
   }
 
-  render() {
+  render(delta) {
     this.raycaster.setFromCamera( this.mouse, this.camera );
     let intersects = this.raycaster.intersectObjects( this.scene.children, true);
 
@@ -58,13 +60,13 @@ export class Space {
       }
     }
 
-    this.spaceStationGroup.rotation.z += 0.001;
+    this.spaceStationGroup.rotation.z += 0.1 * delta;
     this.spaceStationGroup.children.forEach(function(station) {
-      station.rotation.z += station.userData.rotationSpeed;
+      station.rotation.z += station.userData.rotationSpeed * delta;
     });
 
     this.shipList.forEach(function(ship) {
-      ship.update();
+      ship.update(delta);
     });
 
     this.renderer.render( this.scene, this.camera );
@@ -162,19 +164,19 @@ export class Space {
     this.spaceStationGroup = new THREE.Object3D();
     this.scene.add(this.spaceStationGroup);
 
-    for(let i = 0; i < 10; ++i) {
+    for(let i = 0; i < 3; ++i) {
       let spaceStation = new Sprite('space-station', THREE.Math.randInt(1, 3));
       let scale = THREE.Math.randFloat(2, 3);
       spaceStation.position.set(THREE.Math.randFloat(-8, 8), THREE.Math.randFloat(-8, 8), THREE.Math.randFloat(2, 4));
       spaceStation.scale.set(scale, scale, 1);
       spaceStation.rotation.z = Random.getRandomAngle();
-      spaceStation.userData.rotationSpeed = THREE.Math.randFloat(-0.004, -0.01);
+      spaceStation.userData.rotationSpeed = THREE.Math.randFloat(-1, 1);
       this.spaceStationGroup.add(spaceStation);
     }
 
     this.spaceStationGroup.children[0].position.set(0, 0, 5);
 
-    for(let i = 0; i < 1000; ++i) {
+    for(let i = 0; i < 250; ++i) {
     	let ship = new Ship();
     	this.scene.add(ship);
     	this.shipList.push(ship);
