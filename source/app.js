@@ -1,1 +1,1 @@
-require('./space/space.js');
+require('./space/main.js');
