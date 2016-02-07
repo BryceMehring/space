@@ -11,14 +11,14 @@ var jshint = require('gulp-jshint');
 var exit = require('gulp-exit');
 
 function compile(watch) {
-  var bundler = watchify(browserify('./source/space/space.js', { debug: true }).transform(babel));
+  var bundler = watchify(browserify('./source/app.js', { debug: true }).transform(babel));
 
   function rebundle() {
     lint();
 
     var bundle = bundler.bundle()
       .on('error', function(err) { console.error(err); this.emit('end'); })
-      .pipe(source('space.js'))
+      .pipe(source('main.js'))
       .pipe(buffer())
       //.pipe(sourcemaps.init({ loadMaps: true }))
       //.pipe(sourcemaps.write('./'))

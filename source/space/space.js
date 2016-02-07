@@ -17,6 +17,8 @@ camera.position.z = 8;
 
 let renderer = new THREE.WebGLRenderer();
 let canvas = renderer.domElement;
+let mouse = new THREE.Vector2();
+let raycaster = new THREE.Raycaster();
 renderer.setSize( WIDTH, HEIGHT );
 
 gameElement.appendChild(canvas);
@@ -60,14 +62,36 @@ for(let i = 0; i < 4; ++i) {
 spaceStationGroup.children[0].position.set(0, 0, 5);
 
 let shipList = [];
-for(let i = 0; i < 150; ++i) {
+for(let i = 0; i < 250; ++i) {
 	let ship = new Ship();
 	scene.add(ship);
 	shipList.push(ship);
 }
 
-function render () {
-	requestAnimationFrame( render );
+function animate () {
+	requestAnimationFrame( animate );
+  render();
+}
+
+let intersected = null;
+function render() {
+  raycaster.setFromCamera( mouse, camera );
+  let intersects = raycaster.intersectObjects( scene.children, true);
+
+  if(intersected) {
+    intersected.forEach(function(intersectedObject) {
+      intersectedObject.object.geometry.setColor({r: 1, g: 1, b: 1});
+    });
+    intersected = null;
+  }
+
+  if(intersects.length > 0) {
+    intersects.forEach(function(intersectedObject) {
+      intersectedObject.object.geometry.setColor({r: 1, g: 0.2, b: 0.2});
+    });
+    intersected = intersects;
+  }
+
   spaceStationGroup.rotation.z += 0.001;
   spaceStationGroup.children.forEach(function(station) {
     station.rotation.z += station.userData.rotationSpeed;
@@ -97,6 +121,13 @@ function updateIndex(sprite, min, max) {
 	});
 }*/
 
+function onMouseMove( event ) {
+	event.preventDefault();
+
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
@@ -114,9 +145,10 @@ function onMouseDown(event) {
 
 gameElement.addEventListener('wheel', onWheelEvent, false);
 gameElement.addEventListener('mousedown', onMouseDown, false);
+gameElement.addEventListener( 'mousemove', onMouseMove, false );
 window.addEventListener( 'resize', onWindowResize, false );
 
 spaceStationGroup.children.forEach(function(station) {
   window.setInterval(updateIndex, 2000, station, 1, 3);
 });
-render();
+animate();
