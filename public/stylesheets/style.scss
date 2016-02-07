@@ -25,3 +25,12 @@ a {
   overflow: hidden;
   z-index: 10;
 }
+
+#no-webgl {
+  background: rgb(202, 60, 60);
+  padding: 0.5em;
+}
+
+.hidden {
+  display: none;
+}

@@ -49,11 +49,13 @@ export class Space {
       this.intersected = null;
     }
 
-    if(intersects.length > 0) {
-      intersects.forEach(function(intersectedObject) {
-        intersectedObject.object.geometry.setColor({r: 1, g: 0.2, b: 0.2});
-      });
-      this.intersected = intersects;
+    if(this.mouseDown) {
+      if(intersects.length > 0) {
+        intersects.forEach(function(intersectedObject) {
+          intersectedObject.object.geometry.setColor({r: 1, g: 0.2, b: 0.2});
+        });
+        this.intersected = intersects;
+      }
     }
 
     this.spaceStationGroup.rotation.z += 0.001;
@@ -97,6 +99,12 @@ export class Space {
 
     function onMouseDown(event) {
       event.preventDefault();
+      space.mouseDown = true;
+    }
+
+    function onMouseUp(event) {
+      event.preventDefault();
+      space.mouseDown = false;
     }
 
     function onMouseMove( event ) {
@@ -114,6 +122,7 @@ export class Space {
 
     this.gameElement.addEventListener('wheel', onWheelEvent, false);
     this.gameElement.addEventListener('mousedown', onMouseDown, false);
+    this.gameElement.addEventListener('mouseup', onMouseUp, false);
     this.gameElement.addEventListener( 'mousemove', onMouseMove, false );
     window.addEventListener( 'resize', onWindowResize, false );
 
@@ -172,5 +181,9 @@ export class Space {
     }
 
     return this;
+  }
+
+  static defaultSpace() {
+    return new Space();
   }
 }
