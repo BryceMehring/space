@@ -169,8 +169,8 @@ export class Space {
       let scale = THREE.Math.randFloat(2, 3);
       spaceStation.position.set(THREE.Math.randFloat(-8, 8), THREE.Math.randFloat(-8, 8), THREE.Math.randFloat(2, 4));
       spaceStation.scale.set(scale, scale, 1);
-      spaceStation.rotation.z = Random.getRandomAngle();
-      spaceStation.userData.rotationSpeed = THREE.Math.randFloat(-1, 1);
+      spaceStation.rotation.z = Random.getRandAngle();
+      spaceStation.userData.rotationSpeed = THREE.Math.randInt(0, 1) ? THREE.Math.randFloat(-1, 0.5) : THREE.Math.randFloat(0.5, 1)
       this.spaceStationGroup.add(spaceStation);
     }
 

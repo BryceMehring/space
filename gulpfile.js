@@ -20,9 +20,9 @@ function compile(watch) {
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source('main.js'))
       .pipe(buffer())
-      //.pipe(sourcemaps.init({ loadMaps: true }))
-      //.pipe(sourcemaps.write('./'))
-      .pipe(uglify())
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(sourcemaps.write('./'))
+      //.pipe(uglify())
       .pipe(gulp.dest('public/javascripts'));
 
     if(!watch) {
