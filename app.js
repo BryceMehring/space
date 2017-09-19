@@ -1,7 +1,6 @@
 var express = require('express');
 var compression = require('compression');
 var nunjucks = require('nunjucks');
-var mongoose = require('mongoose');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -9,9 +8,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
-
-//var db = mongoose.createConnection(process.env.MONGOLAB_URI);
-//global.db = db;
 
 // view engine setup
 nunjucks.configure('views', {
