@@ -1,5 +1,3 @@
 node_modules/
-public/stylesheets/style.css
-public/javascripts/main.js
-*.css.map
-*.js.map
+dist/
+vendor/

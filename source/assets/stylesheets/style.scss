@@ -1,0 +1,40 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+input, form {
+  max-width: 100%;
+}
+
+#info {
+  text-align: center;
+  padding: 10px;
+  z-index: 10;
+  width: 100%;
+  position: absolute;
+  color: #fff;
+}
+
+#game {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.error {
+  background: red;
+  padding: 0.5em;
+}
+
+.hide {
+  display: none;
+}

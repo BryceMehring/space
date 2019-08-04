@@ -1,12 +1,12 @@
-require('./lib/modernizr.js');
+import '../vendor/modernizr';
+import './assets/stylesheets/style.scss';
 
 const app = (supportsWebgl) => {
   if(supportsWebgl) {
-    require('./space/main.js');
-    require('./chat/chat.js');
-  }
-  else {
-    $('#no-webgl').show();
+    require('./space/main');
+  } else {
+    const element = document.getElementById('no-webgl');
+    element.style.display = 'block';
   }
 };
 

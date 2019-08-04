@@ -1,7 +1,12 @@
-import {Sprite} from './sprite.js';
-import {MaterialManager} from './materialManager.js';
-import {Ship} from './ship.js';
-import {Random} from '../utils/random.js'
+import * as THREE from 'three';
+import ships from '../assets/images/ships.png';
+import spaceStationNormal from '../assets/images/space-station-normal.png';
+import spaceStation from '../assets/images/space-station.png';
+import { Random } from '../utils/random';
+import { MaterialManager } from './materialManager';
+import { Ship } from './ship';
+import { Sprite } from './sprite';
+
 
 export class Space {
   constructor(params) {
@@ -134,15 +139,15 @@ export class Space {
   loadTextures() {
     MaterialManager.addTexture({
       key: 'ship',
-    	texture: '/images/ships.png',
+    	texture: ships,
     	tilesHorizontal: 4,
     	tilesVerticle: 4
     });
 
     MaterialManager.addTexture({
       key: 'space-station',
-      texture: '/images/space-station.png',
-      normal: '/images/space-station-normal.png',
+      texture: spaceStation,
+      normal: spaceStationNormal,
       tilesHorizontal: 2,
       tilesVerticle: 2,
       specular: 0x55555555,

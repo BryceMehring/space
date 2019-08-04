@@ -3,24 +3,27 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "webpack",
-    "start": "node ./bin/www"
+    "start": "webpack-dev-server",
+    "prebuild": "modernizr -c modernizr-config.json -d vendor",
+    "build:dev": "webpack --mode development",
+    "build": "webpack --mode production"
   },
-  "dependencies": {
-    "body-parser": "~1.13.2",
-    "compression": "^1.6.2",
-    "cookie-parser": "~1.3.5",
-    "debug": "~2.2.0",
-    "express": "^4.14.0",
-    "jshint": "^2.9.2",
-    "morgan": "~1.6.1",
-    "node-sass-middleware": "^0.8.0",
-    "nunjucks": "^2.4.2",
-    "serve-favicon": "~2.3.0",
-    "socket.io": "^1.4.6",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.0",
-    "webpack": "^3.6.0"
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.1.0",
+    "file-loader": "^4.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "modernizr": "^3.7.1",
+    "sass": "^1.22.9",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "three": "^0.107.0",
+    "url-loader": "^2.1.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2"
   }
 }

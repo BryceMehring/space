@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export class Input {
 	static setCamera(camera) {
 		Input.camera = camera;

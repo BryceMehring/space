@@ -1,5 +1,6 @@
-import {MaterialManager} from './materialManager.js';
-import {ColorPlane} from './colorPlane.js';
+import * as THREE from 'three';
+import { ColorPlane } from './colorPlane';
+import { MaterialManager } from './materialManager';
 
 export class Sprite extends THREE.Mesh {
 	constructor(texture, index = 0) {

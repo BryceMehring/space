@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export class ColorPlane extends THREE.PlaneBufferGeometry {
 	constructor(...params) {
 		super(...params);

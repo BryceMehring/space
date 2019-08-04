@@ -1,4 +1,4 @@
-import {Space} from './space.js';
+import {Space} from './space';
 
 Space
   .defaultSpace()

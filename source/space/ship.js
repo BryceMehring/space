@@ -1,5 +1,6 @@
 // TODO: clean this up
-import {Sprite} from './sprite.js';
+import {Sprite} from './sprite';
+import * as THREE from 'three';
 
 export class Ship extends THREE.Object3D {
   constructor(params) {

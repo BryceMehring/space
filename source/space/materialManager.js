@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export class MaterialManager {
 	/* params = {
 		key: unique value which identifies the texture + material
