@@ -11,59 +11,77 @@ export class MaterialManager {
 		shininess: How shiny the specular highlight is; a higher value gives a sharper highlight. (optional),
 		color: Diffuse color of the material. (optional)
 	}*/
-	static addTexture(params) {
-		params.tilesHorizontal = params.tilesHorizontal || 1;
-		params.tilesVerticle = params.tilesVerticle || 1;
 
-		let repeatHorizontal = 1 / params.tilesHorizontal,
-			repeatVertical = 1 / params.tilesVerticle;
+  static loadTexture(texture) {
+    return new Promise((resolve, reject) => {
+      if (MaterialManager.textureCache[texture]) {
+        return resolve(MaterialManager.textureCache[texture].clone());
+      }
+      MaterialManager.textureLoader.load(texture, (imageBitmap) => {
+        MaterialManager.textureCache[texture] = new THREE.CanvasTexture(imageBitmap);
+        resolve(MaterialManager.textureCache[texture])
+      }, reject);
+    });
+  }
 
-		MaterialManager.cache[params.key] = [];
-		for(let i = 0; i < params.tilesVerticle; ++i) {
-			for(let j = 0; j < params.tilesHorizontal; ++j) {
-				let index = i * params.tilesHorizontal + j,
-					offsetX = j / params.tilesHorizontal,
-					offsetY = i / params.tilesVerticle,
-					materialType = THREE.MeshBasicMaterial,
-					textures = {
-						textureMap: MaterialManager.textureLoader.load(params.texture)
-					};
+  static async addTexture(params) {
+    params.tilesHorizontal = params.tilesHorizontal || 1;
+    params.tilesVerticle = params.tilesVerticle || 1;
 
-				let materialArgs = {
-					map: textures.textureMap,
-					transparent: true,
-					alphaTest: 0.01,
-					color: params.color || 0xffffffff,
-					vertexColors: THREE.VertexColors
-				};
+    let repeatHorizontal = 1 / params.tilesHorizontal,
+      repeatVertical = 1 / params.tilesVerticle;
 
-				if(params.normal) {
-					materialType = THREE.MeshPhongMaterial;
-					textures.normalMap = MaterialManager.textureLoader.load(params.normal);
+    MaterialManager.cache[params.key] = [];
+    for (let i = 0; i < params.tilesVerticle; ++i) {
+      for (let j = 0; j < params.tilesHorizontal; ++j) {
+        let index = i * params.tilesHorizontal + j,
+          offsetX = j / params.tilesHorizontal,
+          offsetY = i / params.tilesVerticle,
+          materialType = THREE.MeshBasicMaterial,
+          textures = {
+            textureMap: await MaterialManager.loadTexture(params.texture),
+          };
 
-					materialArgs.specular = params.specular || null;
-					materialArgs.shininess = params.shininess || null;
-					materialArgs.normalMap = textures.normalMap;
-				}
+        let materialArgs = {
+          map: textures.textureMap,
+          transparent: true,
+          alphaTest: 0.01,
+          color: params.color || 0xffffffff,
+          vertexColors: THREE.VertexColors
+        };
 
-				let material = new materialType(materialArgs);
+        if (params.normal) {
+          materialType = THREE.MeshPhongMaterial;
+          textures.normalMap = await MaterialManager.loadTexture(params.normal);
 
-				for(let key in textures) {
-					let texture = textures[key];
-					texture.wrapS = texture.wrapT = MaterialManager.textureWrapMode;
-					texture.repeat.set(repeatHorizontal, repeatVertical);
-					texture.offset.set(offsetX, offsetY);
-				}
+          materialArgs.specular = params.specular || null;
+          materialArgs.shininess = params.shininess || null;
+          materialArgs.normalMap = textures.normalMap;
+        }
 
-				MaterialManager.cache[params.key][index] = material;
-			}
-		}
-	}
+        let material = new materialType(materialArgs);
 
-	static getMaterial(key, index) {
-		return MaterialManager.cache[key][index];
-	}
+        for (let key in textures) {
+          let texture = textures[key];
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(repeatHorizontal, repeatVertical);
+          texture.offset.set(offsetX, offsetY);
+        }
+
+        MaterialManager.cache[params.key][index] = material;
+      }
+    }
+  }
+
+  static getMaterial(key, index) {
+    return MaterialManager.cache[key][index];
+  }
 }
 MaterialManager.cache = {};
-MaterialManager.textureWrapMode = THREE.RepeatWrapping; // TODO: maybe we could do something else with this?
-MaterialManager.textureLoader = new THREE.TextureLoader();
+MaterialManager.textureCache = {};
+MaterialManager.textureLoader = new THREE.ImageBitmapLoader();
+MaterialManager.textureLoader.setOptions({ 
+  imageOrientation: 'flipY',
+  premultiplyAlpha: 'premultiply',
+});

@@ -7,18 +7,17 @@ import { MaterialManager } from './materialManager';
 import { Ship } from './ship';
 import { Sprite } from './sprite';
 
-
 export class Space {
-  constructor(params) {
+  constructor({canvas}) {
+    this.canvas = canvas;
     this.shipList = [];
-    this.configureThreeJS()
-        .configureInput()
-        .loadTextures()
-        .buildLights()
-        .buildWorld();
   }
 
-  run() {
+  async run() {
+    this.configureThreeJS();
+    await this.loadTextures();
+    this.buildLights()
+      .buildWorld();
 
     function updateIndex(sprite, min, max) {
     	let index = sprite.index + 1;
@@ -29,11 +28,31 @@ export class Space {
     }
 
     this.spaceStationGroup.children.forEach(function(station) {
-      window.setInterval(updateIndex, 2000, station, 1, 3);
+      setInterval(updateIndex, 2000, station, 1, 3);
     });
 
     this.clock = new THREE.Clock(true);
     this.animate();
+  }
+
+  configureThreeJS() {
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera( 90, this.width/this.height, 0.1, 1000 );
+    this.camera.position.z = 8;
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+    });
+
+    this.resize({
+      width: this.width,
+      height: this.height,
+    });
+
+    this.mouse = new THREE.Vector2();
+    this.raycaster = new THREE.Raycaster();
   }
 
   animate() {
@@ -77,84 +96,24 @@ export class Space {
     this.renderer.render( this.scene, this.camera );
   }
 
-  configureThreeJS() {
-    this.WIDTH = window.innerWidth;
-    this.HEIGHT = window.innerHeight;
-
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera( 90, this.WIDTH/this.HEIGHT, 0.1, 1000 );
-    this.camera.position.z = 8;
-
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setSize( this.WIDTH, this.HEIGHT );
-
-    this.mouse = new THREE.Vector2();
-    this.raycaster = new THREE.Raycaster();
-
-    this.gameElement = document.getElementById('game');
-    this.gameElement.appendChild(this.renderer.domElement);
-
-    return this;
-  }
-
-  configureInput() {
-    let space = this;
-    function onWheelEvent(event) {
-      let deltaY = event.deltaY > 0 ? 1 : -1;
-      space.camera.position.z += deltaY;
-    }
-
-    function onMouseDown(event) {
-      event.preventDefault();
-      space.mouseDown = true;
-    }
-
-    function onMouseUp(event) {
-      event.preventDefault();
-      space.mouseDown = false;
-    }
-
-    function onMouseMove( event ) {
-    	event.preventDefault();
-
-    	space.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    	space.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    }
-
-    function onWindowResize() {
-    	space.camera.aspect = window.innerWidth / window.innerHeight;
-    	space.camera.updateProjectionMatrix();
-    	space.renderer.setSize( window.innerWidth, window.innerHeight );
-    }
-
-    this.gameElement.addEventListener('wheel', onWheelEvent, false);
-    this.gameElement.addEventListener('mousedown', onMouseDown, false);
-    this.gameElement.addEventListener('mouseup', onMouseUp, false);
-    this.gameElement.addEventListener( 'mousemove', onMouseMove, false );
-    window.addEventListener( 'resize', onWindowResize, false );
-
-    return this;
-  }
-
-  loadTextures() {
-    MaterialManager.addTexture({
-      key: 'ship',
-    	texture: ships,
-    	tilesHorizontal: 4,
-    	tilesVerticle: 4
-    });
-
-    MaterialManager.addTexture({
-      key: 'space-station',
-      texture: spaceStation,
-      normal: spaceStationNormal,
-      tilesHorizontal: 2,
-      tilesVerticle: 2,
-      specular: 0x55555555,
-      shininess: 40
-    });
-
-    return this;
+  async loadTextures() {
+    return Promise.all([
+      MaterialManager.addTexture({
+        key: 'ship',
+        texture: ships,
+        tilesHorizontal: 4,
+        tilesVerticle: 4
+      }),
+      MaterialManager.addTexture({
+        key: 'space-station',
+        texture: spaceStation,
+        normal: spaceStationNormal,
+        tilesHorizontal: 2,
+        tilesVerticle: 2,
+        specular: 0x55555555,
+        shininess: 40
+      }),
+    ]);
   }
 
   buildLights() {
@@ -181,7 +140,7 @@ export class Space {
 
     this.spaceStationGroup.children[0].position.set(0, 0, 5);
 
-    for(let i = 0; i < 250; ++i) {
+    for(let i = 0; i < 1000; ++i) {
     	let ship = new Ship();
     	this.scene.add(ship);
     	this.shipList.push(ship);
@@ -190,7 +149,15 @@ export class Space {
     return this;
   }
 
-  static defaultSpace() {
-    return new Space();
+  resize({width, height}) {
+    this.width = width;
+    this.height = height;
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height, false);
+  }
+
+  wheel({deltaY}) {
+    this.camera.position.z += deltaY;
   }
 }

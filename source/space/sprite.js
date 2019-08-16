@@ -11,7 +11,7 @@ export class Sprite extends THREE.Mesh {
 	}
 
 	setIndex(index) {
-		if(index !== this.index) {
+		if (index !== this.index) {
 			this.material = MaterialManager.getMaterial(this.texture, index);
 			this.index = index;
 		}
@@ -20,7 +20,7 @@ export class Sprite extends THREE.Mesh {
 	}
 
 	clone(object, ...params) {
-		if(object === undefined) {
+		if (object === undefined) {
 			object = new Sprite(this.texture, this.index);
 		}
 

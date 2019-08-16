@@ -6,7 +6,9 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const dist = path.resolve(__dirname, './dist');
 
 module.exports = {
-  entry: './source/app.js',
+  entry: {
+    main: './source/app.js',
+  },
   output: {
     path: dist,
     filename: '[name].[contenthash].js',
@@ -14,19 +16,15 @@ module.exports = {
   devServer: {
     contentBase: dist,
     compress: true,
+    overlay: true,
     port: 9000
   },
+  devtool: 'source-maps',
   module: {
     rules: [
       {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader' }
       },
       {
         test: /\.(png|jpg|gif)$/i,
@@ -34,7 +32,7 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: Infinity,
+              limit: 8192,
             },
           },
         ],
@@ -57,6 +55,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'source/index.html',
+      excludeChunks: ['worker'],
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -66,4 +65,10 @@ module.exports = {
       chunkFilename: "[id].css"
     })
   ],
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      chunks: 'all'
+    },
+  },
 };
