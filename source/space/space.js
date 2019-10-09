@@ -44,6 +44,7 @@ export class Space {
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
+      antialias: true,
     });
 
     this.resize({
@@ -96,7 +97,7 @@ export class Space {
     this.renderer.render( this.scene, this.camera );
   }
 
-  async loadTextures() {
+  loadTextures() {
     return Promise.all([
       MaterialManager.addTexture({
         key: 'ship',
@@ -140,7 +141,7 @@ export class Space {
 
     this.spaceStationGroup.children[0].position.set(0, 0, 5);
 
-    for(let i = 0; i < 1000; ++i) {
+    for(let i = 0; i < 250; ++i) {
     	let ship = new Ship();
     	this.scene.add(ship);
     	this.shipList.push(ship);
