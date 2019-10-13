@@ -8,9 +8,13 @@
 </head>
 
 <body>
-  <div id="no-webgl" class="error hide">
+  <canvas id="game"></canvas>
+  <div id="no-offscreen-canvas" class="error hide">
     <p>
-      <strong>WebGL is not supported. Please upgrade your browser or computer</strong>
+      <strong>
+        OffscreenCanvas is not supported. Please use Chrome or see
+        <a href="https://caniuse.com/#feat=mdn-api_htmlcanvaselement_transfercontroltooffscreen" target="_blank">https://caniuse.com/#feat=mdn-api_htmlcanvaselement_transfercontroltooffscreen</a>
+      </strong>
     </p>
   </div>
   <noscript>
@@ -18,7 +22,6 @@
       <strong>Enable javascript to use this site</strong>
     </p>
   </noscript>
-  <canvas id="game"></canvas>
 </body>
 
 </html>
