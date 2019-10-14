@@ -11,12 +11,13 @@ export class Ship extends THREE.Object3D {
     this.position.set(THREE.Math.randFloat(-2, 2), THREE.Math.randFloat(-2, 2), THREE.Math.randFloat(2, 4));
     this.rotation.z = THREE.Math.randFloat(0, 2 * Math.PI);
 
+    const sprite = params.sprite || new Sprite('ship', THREE.Math.randInt(11, 15));
+
     this.userData = {
-      sprite: params.sprite || new Sprite('ship', THREE.Math.randInt(11, 15)),
       speed: params.speed || THREE.Math.randFloat(0.5, 2)
     };
 
-    this.add(this.userData.sprite);
+    this.add(sprite);
   }
 
   update(delta) {

@@ -31,7 +31,6 @@ export class Space {
       setInterval(updateIndex, 2000, station, 1, 3);
     });
 
-    this.clock = new THREE.Clock(true);
     this.animate();
   }
 
@@ -56,13 +55,12 @@ export class Space {
     this.raycaster = new THREE.Raycaster();
   }
 
-  animate() {
-    let space = this;
-    let delta = this.clock.getDelta();
-    requestAnimationFrame(function() {
-      space.animate();
+  animate(previousTime = 0) {
+    requestAnimationFrame((time) => {
+      const delta = (time - previousTime) / 1000;
+      this.render(delta);
+      this.animate(time);
     });
-    this.render(delta);
   }
 
   render(delta) {
@@ -86,13 +84,13 @@ export class Space {
     }
 
     this.spaceStationGroup.rotation.z += 0.1 * delta;
-    this.spaceStationGroup.children.forEach(function(station) {
-      station.rotation.z += station.userData.rotationSpeed * delta;
-    });
+    for (const spaceStation of this.spaceStationGroup.children) {
+      spaceStation.rotation.z += spaceStation.userData.rotationSpeed * delta;
+    }
 
-    this.shipList.forEach(function(ship) {
+    for (const ship of this.shipList) {
       ship.update(delta);
-    });
+    }
 
     this.renderer.render( this.scene, this.camera );
   }
