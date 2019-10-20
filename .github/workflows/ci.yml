@@ -1,10 +1,8 @@
-name: Node CI
-
 on:
   push:
     branches:
       - develop
-
+name: CI
 jobs:
   build:
     runs-on: ubuntu-latest
