@@ -3,6 +3,7 @@ const {
   GITHUB_ACTOR,
   GITHUB_REPOSITORY,
   GITHUB_TOKEN,
+  EMAIL
 } = process.env;
 
 ghpages.publish('dist', {
@@ -10,7 +11,7 @@ ghpages.publish('dist', {
   repo: `https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git`,
   user: {
     name: GITHUB_ACTOR,
-    email: 'action@github.com'
+    email: EMAIL,
   }
 }, (err) => {
   if (err) {
