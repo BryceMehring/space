@@ -18,10 +18,15 @@ jobs:
         with:
           node-version: '12.x'
 
-      - name: npm install, deploy
+      - name: npm install, build
         run: |
           npm ci
-          npm run deploy
+          npm run build
+          
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@2.0.3
         env:
-          CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BASE_BRANCH: develop # The branch the action should deploy from.
+          BRANCH: master # The branch the action should deploy to.
+          FOLDER: dist # The folder the action should deploy.
