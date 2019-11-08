@@ -55,8 +55,9 @@ export class Space {
     this.raycaster = new THREE.Raycaster();
   }
 
-  animate(previousTime = 0) {
+  animate(previousTime) {
     requestAnimationFrame((time) => {
+      previousTime = previousTime || time;
       const delta = (time - previousTime) / 1000;
       this.render(delta);
       this.animate(time);

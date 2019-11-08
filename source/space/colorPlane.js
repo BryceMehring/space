@@ -9,7 +9,7 @@ export class ColorPlane extends THREE.PlaneBufferGeometry {
 		let colorBuffer = new Float32Array(3*this.bufferCount);
 		colorBuffer.fill(1);
 
-		this.addAttribute('color', new THREE.BufferAttribute(colorBuffer, 3));
+		this.setAttribute('color', new THREE.BufferAttribute(colorBuffer, 3));
 	}
 
 	setColor(color) {
