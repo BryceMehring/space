@@ -1,29 +1,29 @@
-import * as THREE from 'three';
+import { Mesh } from 'three';
 import { ColorPlane } from './colorPlane';
 import { MaterialManager } from './materialManager';
 
-export class Sprite extends THREE.Mesh {
-	constructor(texture, index = 0) {
-		super(new ColorPlane(1, 1), MaterialManager.getMaterial(texture, index));
+export class Sprite extends Mesh {
+  constructor(texture, index = 0) {
+    super(new ColorPlane(1, 1), MaterialManager.getMaterial(texture, index));
 
-		this.texture = texture;
-		this.index = index;
-	}
+    this.texture = texture;
+    this.index = index;
+  }
 
-	setIndex(index) {
-		if (index !== this.index) {
-			this.material = MaterialManager.getMaterial(this.texture, index);
-			this.index = index;
-		}
+  setIndex(index) {
+    if (index !== this.index) {
+      this.material = MaterialManager.getMaterial(this.texture, index);
+      this.index = index;
+    }
 
-		return this;
-	}
+    return this;
+  }
 
-	clone(object, ...params) {
-		if (object === undefined) {
-			object = new Sprite(this.texture, this.index);
-		}
+  clone(object, ...params) {
+    if (object === undefined) {
+      object = new Sprite(this.texture, this.index);
+    }
 
-		return super.clone(object, ...params);
-	}
+    return super.clone(object, ...params);
+  }
 }

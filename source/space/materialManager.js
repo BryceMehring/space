@@ -1,7 +1,7 @@
-import * as THREE from 'three';
+import { CanvasTexture, MeshStandardMaterial, ImageBitmapLoader, RepeatWrapping } from 'three';
 
 export class MaterialManager {
-	/* params = {
+  /* params = {
 		key: unique value which identifies the texture + material
 		texture: texture name,
 		normal: normal map texture (optional),
@@ -18,8 +18,8 @@ export class MaterialManager {
         return resolve(MaterialManager.textureCache[texture].clone());
       }
       MaterialManager.textureLoader.load(texture, (imageBitmap) => {
-        MaterialManager.textureCache[texture] = new THREE.CanvasTexture(imageBitmap);
-        resolve(MaterialManager.textureCache[texture])
+        MaterialManager.textureCache[texture] = new CanvasTexture(imageBitmap);
+        resolve(MaterialManager.textureCache[texture]);
       }, reject);
     });
   }
@@ -37,7 +37,7 @@ export class MaterialManager {
         let index = i * params.tilesHorizontal + j,
           offsetX = j / params.tilesHorizontal,
           offsetY = i / params.tilesVerticle,
-          materialType = THREE.MeshBasicMaterial,
+          materialType = MeshStandardMaterial,
           textures = {
             textureMap: await MaterialManager.loadTexture(params.texture),
           };
@@ -47,15 +47,13 @@ export class MaterialManager {
           transparent: true,
           alphaTest: 0.01,
           color: params.color || 0xffffffff,
-          vertexColors: THREE.VertexColors
         };
 
         if (params.normal) {
-          materialType = THREE.MeshPhongMaterial;
           textures.normalMap = await MaterialManager.loadTexture(params.normal);
 
-          materialArgs.specular = params.specular || null;
-          materialArgs.shininess = params.shininess || null;
+          materialArgs.roughness = params.roughness || null;
+          materialArgs.metalness = params.metalness || null;
           materialArgs.normalMap = textures.normalMap;
         }
 
@@ -63,8 +61,8 @@ export class MaterialManager {
 
         for (let key in textures) {
           let texture = textures[key];
-          texture.wrapS = THREE.RepeatWrapping;
-          texture.wrapT = THREE.RepeatWrapping;
+          texture.wrapS = RepeatWrapping;
+          texture.wrapT = RepeatWrapping;
           texture.repeat.set(repeatHorizontal, repeatVertical);
           texture.offset.set(offsetX, offsetY);
         }
@@ -74,14 +72,14 @@ export class MaterialManager {
     }
   }
 
-  static getMaterial(key, index) {
+  static getMaterial(key, index = 0) {
     return MaterialManager.cache[key][index];
   }
 }
 MaterialManager.cache = {};
 MaterialManager.textureCache = {};
-MaterialManager.textureLoader = new THREE.ImageBitmapLoader();
-MaterialManager.textureLoader.setOptions({ 
+MaterialManager.textureLoader = new ImageBitmapLoader();
+MaterialManager.textureLoader.setOptions({
   imageOrientation: 'flipY',
   premultiplyAlpha: 'premultiply',
 });

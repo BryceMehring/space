@@ -1,27 +1,27 @@
 // TODO: clean this up
 import {Sprite} from './sprite';
-import * as THREE from 'three';
+import { Object3D, Vector3, Math as ThreeMath } from 'three';
 
-export class Ship extends THREE.Object3D {
+export class Ship extends Object3D {
   constructor(params) {
     params = params || {};
 
     super();
 
-    this.position.set(THREE.Math.randFloat(-2, 2), THREE.Math.randFloat(-2, 2), THREE.Math.randFloat(2, 4));
-    this.rotation.z = THREE.Math.randFloat(0, 2 * Math.PI);
+    this.position.set(ThreeMath.randFloat(-2, 2), ThreeMath.randFloat(-2, 2), ThreeMath.randFloat(2, 4));
+    this.rotation.z = ThreeMath.randFloat(0, 2 * Math.PI);
 
-    const sprite = params.sprite || new Sprite('ship', THREE.Math.randInt(11, 15));
+    const sprite = params.sprite || new Sprite('ship', ThreeMath.randInt(11, 15));
 
     this.userData = {
-      speed: params.speed || THREE.Math.randFloat(0.5, 2)
+      speed: params.speed || ThreeMath.randFloat(0.5, 2)
     };
 
     this.add(sprite);
   }
 
   update(delta) {
-    let dirVector = new THREE.Vector3(-Math.sin(this.rotation.z), Math.cos(this.rotation.z), 0);
+    let dirVector = new Vector3(-Math.sin(this.rotation.z), Math.cos(this.rotation.z), 0);
     dirVector.multiplyScalar(this.userData.speed * delta);
 
     this.position.add(dirVector);

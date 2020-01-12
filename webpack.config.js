@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const dist = path.resolve(__dirname, './dist');
 
@@ -17,7 +17,8 @@ module.exports = {
     contentBase: dist,
     compress: true,
     overlay: true,
-    port: 9000
+    open: true,
+    port: 9000,
   },
   devtool: 'source-maps',
   module: {
@@ -64,8 +65,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: "[name].[contenthash].css",
-      chunkFilename: "[id].css"
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].css'
     })
   ],
   optimization: {
