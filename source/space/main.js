@@ -6,7 +6,7 @@ if ('transferControlToOffscreen' in gameCanvas) {
   const onWindowResize = () => {
     gameCanvas.setAttribute('width', window.innerWidth);
     gameCanvas.setAttribute('height', window.innerHeight);
-  }
+  };
 
   onWindowResize(gameCanvas);
 
