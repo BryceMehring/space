@@ -3,7 +3,7 @@ import { WEBGL } from 'three/examples/jsm/WebGL.js';
 const gameCanvas = document.getElementById('game');
 
 if (WEBGL.isWebGL2Available() === true) {
-  if (!('transferControlToOffscreen' in gameCanvas)) {
+  if ('transferControlToOffscreen' in gameCanvas) {
 
     const onWindowResize = () => {
       gameCanvas.setAttribute('width', window.innerWidth);
