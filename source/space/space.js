@@ -28,6 +28,7 @@ export class Space {
     this.camera.position.z = 8;
 
     this.renderer = new WebGLRenderer({
+      context: this.canvas.getContext( 'webgl2', { alpha: false, } ),
       canvas: this.canvas,
       antialias: true,
     });
