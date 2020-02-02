@@ -1,7 +1,7 @@
 // TODO: clean this up
 import { Sprite } from './sprite';
 import { Space } from './space';
-import { Object3D, Vector3, Math as ThreeMath, Event } from 'three';
+import { Object3D, Vector3, MathUtils, Event } from 'three';
 
 interface Params {
   sprite?: Sprite;
@@ -13,13 +13,13 @@ export class Ship extends Object3D {
   constructor(params: Params) {
     super();
 
-    this.position.set(ThreeMath.randFloat(-2, 2), ThreeMath.randFloat(-2, 2), ThreeMath.randFloat(2, 4));
-    this.rotation.z = ThreeMath.randFloat(0, 2 * Math.PI);
+    this.position.set(MathUtils.randFloat(-2, 2), MathUtils.randFloat(-2, 2), MathUtils.randFloat(2, 4));
+    this.rotation.z = MathUtils.randFloat(0, 2 * Math.PI);
 
-    const sprite = params.sprite || new Sprite('ship', ThreeMath.randInt(11, 15));
+    const sprite = params.sprite || new Sprite('ship', MathUtils.randInt(11, 15));
 
     this.userData = {
-      speed: params.speed || ThreeMath.randFloat(0.5, 2)
+      speed: params.speed || MathUtils.randFloat(0.5, 2)
     };
 
     this.add(sprite);

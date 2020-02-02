@@ -1,4 +1,4 @@
-import { Group, Math as ThreeMath, Event } from 'three';
+import { Group, MathUtils, Event } from 'three';
 import { Sprite } from './sprite';
 import { Space } from './space';
 
@@ -13,12 +13,12 @@ export class SpaceStations extends Group {
     this.userData.intervals = [];
 
     for (let i = 0; i < count; ++i) {
-      const spaceStation = new Sprite('space-station', ThreeMath.randInt(1, 3));
-      const scale = ThreeMath.randFloat(2, 3);
-      spaceStation.position.set(ThreeMath.randFloat(-8, 8), ThreeMath.randFloat(-8, 8), ThreeMath.randFloat(-10, 10));
+      const spaceStation = new Sprite('space-station', MathUtils.randInt(1, 3));
+      const scale = MathUtils.randFloat(2, 3);
+      spaceStation.position.set(MathUtils.randFloat(-8, 8), MathUtils.randFloat(-8, 8), MathUtils.randFloat(-10, 10));
       spaceStation.scale.set(scale, scale, 1);
-      spaceStation.rotation.z = ThreeMath.randFloat(0, 3.14);
-      const rotationSpeed = ThreeMath.randInt(0, 1) ? ThreeMath.randFloat(-1, 0.5) : ThreeMath.randFloat(0.5, 1);
+      spaceStation.rotation.z = MathUtils.randFloat(0, 3.14);
+      const rotationSpeed = MathUtils.randInt(0, 1) ? MathUtils.randFloat(-1, 0.5) : MathUtils.randFloat(0.5, 1);
 
       this.userData.intervals.push(setInterval(SpaceStations.updateIndex, 2000, spaceStation, 1, 3));
 

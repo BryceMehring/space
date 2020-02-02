@@ -1,4 +1,4 @@
-import { SphereBufferGeometry, InstancedMesh, Matrix4, Math as ThreeMath, Vector3, Quaternion, Group, Object3D } from 'three';
+import { SphereBufferGeometry, InstancedMesh, Matrix4, MathUtils, Vector3, Quaternion, Group, Object3D } from 'three';
 import { MaterialManager } from './materialManager';
 import { planets as planetTextures } from './textures';
 import { Space } from './space';
@@ -26,10 +26,10 @@ export class Planets extends Group {
       const axis: Vector3[] = [];
 
       for (let j = 0; j < length; j++) {
-        const scale = ThreeMath.randFloat(5, 10);
+        const scale = MathUtils.randFloat(5, 10);
         const m = new Matrix4();
         m.compose(
-          new Vector3(ThreeMath.randFloatSpread(1500), ThreeMath.randFloatSpread(1500), ThreeMath.randFloat(-200, 200)),
+          new Vector3(MathUtils.randFloatSpread(1500), MathUtils.randFloatSpread(1500), MathUtils.randFloat(-200, 200)),
           q,
           new Vector3(scale, scale, scale)
         );
@@ -37,7 +37,7 @@ export class Planets extends Group {
         mesh.setMatrixAt(j, m);
 
         axis.push(
-          new Vector3(ThreeMath.randFloat(-1, 1), ThreeMath.randFloat(-1, 1), ThreeMath.randFloat(-1, 1)).normalize()
+          new Vector3(MathUtils.randFloat(-1, 1), MathUtils.randFloat(-1, 1), MathUtils.randFloat(-1, 1)).normalize()
         );
 
         matrixList.push(m);
@@ -46,7 +46,7 @@ export class Planets extends Group {
       params.space.addEventListener('update', (event) => {
         for (let j = 0; j < length; j++) {
           const dummy = new Object3D();
-          dummy.applyMatrix(matrixList[j]);
+          dummy.applyMatrix4(matrixList[j]);
           dummy.rotateOnAxis(axis[j], 0.5 * event.delta);
           dummy.updateMatrix();
 

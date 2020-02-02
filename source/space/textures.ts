@@ -7,7 +7,7 @@ import venusianTexture from '../assets/images/planets/venusian.png';
 import martianTexture from '../assets/images/planets/martian.png';
 import icyTexture from '../assets/images/planets/icy.png';
 
-export const loadTextures = () => {
+export const loadTextures = (): Promise<void[]> => {
   return Promise.all([
     MaterialManager.addTexture({
       key: 'ship',
