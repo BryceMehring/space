@@ -1,4 +1,3 @@
-import SpaceWorker from 'worker-loader!./space.worker';
 import { WEBGL } from 'three/examples/jsm/WebGL.js';
 const gameCanvas = document.getElementById('game') as HTMLCanvasElement;
 
@@ -14,7 +13,7 @@ if (WEBGL.isWebGL2Available() === true) {
 
     const offscreen = gameCanvas.transferControlToOffscreen();
 
-    const worker = new SpaceWorker();
+    const worker = new Worker('./space.worker', { type: 'module' });
 
     worker.postMessage({ topic: 'canvas', canvas: offscreen }, {
       transfer: [offscreen],

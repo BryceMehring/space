@@ -1,11 +1,11 @@
 import { MaterialManager } from './materialManager';
-import shipsTexture from '../assets/images/ships.png';
-import spaceStationNormalTexture from '../assets/images/space-station-normal.png';
-import spaceStationTexture from '../assets/images/space-station.png';
-import volcanicTexture from '../assets/images/planets/volcanic.png';
-import venusianTexture from '../assets/images/planets/venusian.png';
-import martianTexture from '../assets/images/planets/martian.png';
-import icyTexture from '../assets/images/planets/icy.png';
+import shipsTexture from '@image/ships.png';
+import spaceStationNormalTexture from '@image/space-station-normal.png';
+import spaceStationTexture from '@image/space-station.png';
+import volcanicTexture from '@image/planets/volcanic.png';
+import venusianTexture from '@image/planets/venusian.png';
+import martianTexture from '@image/planets/martian.png';
+import icyTexture from '@image/planets/icy.png';
 
 export const loadTextures = (): Promise<void[]> => {
   return Promise.all([

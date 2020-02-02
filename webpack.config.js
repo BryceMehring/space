@@ -2,6 +2,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WorkerPlugin = require('worker-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const dist = path.resolve(__dirname, './dist');
 
@@ -12,9 +14,11 @@ module.exports = {
   output: {
     path: dist,
     filename: '[name].[contenthash].js',
+    globalObject: 'self',
   },
   resolve: {
-    extensions: [".ts", ".js"]
+    extensions: [".ts", ".js"],
+    plugins: [new TsconfigPathsPlugin()],
   },
   devServer: {
     contentBase: dist,
@@ -26,18 +30,17 @@ module.exports = {
   devtool: 'source-maps',
   module: {
     rules: [
-      { test: /\.ts$/, loader: "ts-loader" },
       {
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader' }
+        test: /\.ts$/,
+        loader: "ts-loader",
       },
       {
-        test: /\.(png|jpg|gif)$/i,
+        test: /\.(png)$/i,
         use: [
           {
-            loader: 'url-loader',
+            loader: 'file-loader',
             options: {
-              limit: 8192,
+              name: '[path][name].[contenthash].[ext]',
             },
           },
         ],
@@ -61,16 +64,16 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
+    new WorkerPlugin(),
     new HtmlWebpackPlugin({
       template: 'source/index.html',
       excludeChunks: ['worker'],
     }),
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
       filename: '[name].[contenthash].css',
-      chunkFilename: '[id].css'
     })
   ],
   optimization: {

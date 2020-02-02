@@ -1,3 +1,3 @@
-import './assets/stylesheets/style.scss';
+import '@stylesheet/style.scss';
 import './space/main';
 
