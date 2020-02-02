@@ -1,11 +1,16 @@
 // TODO: clean this up
-import {Sprite} from './sprite';
-import { Object3D, Vector3, Math as ThreeMath } from 'three';
+import { Sprite } from './sprite';
+import { Space } from './space';
+import { Object3D, Vector3, Math as ThreeMath, Event } from 'three';
+
+interface Params {
+  sprite?: Sprite;
+  speed?: number;
+  space: Space;
+}
 
 export class Ship extends Object3D {
-  constructor(params) {
-    params = params || {};
-
+  constructor(params: Params) {
     super();
 
     this.position.set(ThreeMath.randFloat(-2, 2), ThreeMath.randFloat(-2, 2), ThreeMath.randFloat(2, 4));
@@ -18,11 +23,13 @@ export class Ship extends Object3D {
     };
 
     this.add(sprite);
+
+    params.space.addEventListener('update', this.update.bind(this));
   }
 
-  update(delta) {
-    let dirVector = new Vector3(-Math.sin(this.rotation.z), Math.cos(this.rotation.z), 0);
-    dirVector.multiplyScalar(this.userData.speed * delta);
+  update(event: Event): void {
+    const dirVector = new Vector3(-Math.sin(this.rotation.z), Math.cos(this.rotation.z), 0);
+    dirVector.multiplyScalar(this.userData.speed * event.delta);
 
     this.position.add(dirVector);
 

@@ -3,14 +3,16 @@ import { ColorPlane } from './colorPlane';
 import { MaterialManager } from './materialManager';
 
 export class Sprite extends Mesh {
-  constructor(texture, index = 0) {
+  private texture: string;
+  private index: number;
+  constructor(texture: string, index = 0) {
     super(new ColorPlane(1, 1), MaterialManager.getMaterial(texture, index));
 
     this.texture = texture;
     this.index = index;
   }
 
-  setIndex(index) {
+  public setIndex(index: number): this {
     if (index !== this.index) {
       this.material = MaterialManager.getMaterial(this.texture, index);
       this.index = index;
@@ -19,11 +21,7 @@ export class Sprite extends Mesh {
     return this;
   }
 
-  clone(object, ...params) {
-    if (object === undefined) {
-      object = new Sprite(this.texture, this.index);
-    }
-
-    return super.clone(object, ...params);
+  public get currentIndex(): number {
+    return this.index;
   }
 }

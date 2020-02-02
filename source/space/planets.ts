@@ -1,12 +1,16 @@
-import { SphereBufferGeometry, InstancedMesh, Matrix4, Math as ThreeMath, Vector3, Quaternion, Object3D } from 'three';
+import { SphereBufferGeometry, InstancedMesh, Matrix4, Math as ThreeMath, Vector3, Quaternion, Group, Object3D } from 'three';
 import { MaterialManager } from './materialManager';
 import { planets as planetTextures } from './textures';
+import { Space } from './space';
 
-export class Planets extends Object3D {
-  constructor(params) {
+interface PlanetParams {
+  count: number;
+  space: Space;
+}
+
+export class Planets extends Group {
+  constructor(params: PlanetParams) {
     super();
-
-    const axis = [];
 
     const q = new Quaternion();
     this.position.z = -300;
@@ -16,10 +20,14 @@ export class Planets extends Object3D {
 
       const mesh = new InstancedMesh(starsGeometry, material, params.count);
 
-      let m = new Matrix4();
+      const length = params.count / l;
 
-      for (let j = 0; j < params.count / l; j++) {
+      const matrixList: Matrix4[] = [];
+      const axis: Vector3[] = [];
+
+      for (let j = 0; j < length; j++) {
         const scale = ThreeMath.randFloat(5, 10);
+        const m = new Matrix4();
         m.compose(
           new Vector3(ThreeMath.randFloatSpread(1500), ThreeMath.randFloatSpread(1500), ThreeMath.randFloat(-200, 200)),
           q,
@@ -31,21 +39,23 @@ export class Planets extends Object3D {
         axis.push(
           new Vector3(ThreeMath.randFloat(-1, 1), ThreeMath.randFloat(-1, 1), ThreeMath.randFloat(-1, 1)).normalize()
         );
+
+        matrixList.push(m);
       }
 
-      mesh.onBeforeRender = () => {
-        for (let j = 0; j < params.count / l; j++) {
-          mesh.getMatrixAt(j, m);
-
+      params.space.addEventListener('update', (event) => {
+        for (let j = 0; j < length; j++) {
           const dummy = new Object3D();
-          dummy.applyMatrix(m);
-          dummy.rotateOnAxis(axis[j], 0.5 * params.space.delta);
+          dummy.applyMatrix(matrixList[j]);
+          dummy.rotateOnAxis(axis[j], 0.5 * event.delta);
           dummy.updateMatrix();
 
-          mesh.setMatrixAt(j, dummy.matrix);
+          matrixList[j] = dummy.matrix;
+
+          mesh.setMatrixAt(j, matrixList[j]);
         }
         mesh.instanceMatrix.needsUpdate = true;
-      };
+      });
 
       this.add(mesh);
     }

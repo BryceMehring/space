@@ -7,11 +7,14 @@ const dist = path.resolve(__dirname, './dist');
 
 module.exports = {
   entry: {
-    main: './source/app.js',
+    main: './source/app.ts',
   },
   output: {
     path: dist,
     filename: '[name].[contenthash].js',
+  },
+  resolve: {
+    extensions: [".ts", ".js"]
   },
   devServer: {
     contentBase: dist,
@@ -23,6 +26,7 @@ module.exports = {
   devtool: 'source-maps',
   module: {
     rules: [
+      { test: /\.ts$/, loader: "ts-loader" },
       {
         test: /\.worker\.js$/,
         use: { loader: 'worker-loader' }

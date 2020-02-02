@@ -1,22 +1,24 @@
-import SpaceWorker from './space.worker';
+import SpaceWorker from 'worker-loader!./space.worker';
 import { WEBGL } from 'three/examples/jsm/WebGL.js';
-const gameCanvas = document.getElementById('game');
+const gameCanvas = document.getElementById('game') as HTMLCanvasElement;
 
 if (WEBGL.isWebGL2Available() === true) {
-  if ('transferControlToOffscreen' in gameCanvas) {
+  if (gameCanvas && ('transferControlToOffscreen' in gameCanvas)) {
 
-    const onWindowResize = () => {
-      gameCanvas.setAttribute('width', window.innerWidth);
-      gameCanvas.setAttribute('height', window.innerHeight);
+    const onWindowResize = (): void => {
+      gameCanvas.setAttribute('width', window.innerWidth.toString());
+      gameCanvas.setAttribute('height', window.innerHeight.toString());
     };
 
-    onWindowResize(gameCanvas);
+    onWindowResize();
 
     const offscreen = gameCanvas.transferControlToOffscreen();
 
     const worker = new SpaceWorker();
 
-    worker.postMessage({ topic: 'canvas', canvas: offscreen }, [offscreen]);
+    worker.postMessage({ topic: 'canvas', canvas: offscreen }, {
+      transfer: [offscreen],
+    });
 
     gameCanvas.addEventListener('wheel', (event) => {
       const deltaY = event.deltaY > 0 ? 1 : -1;
@@ -42,7 +44,7 @@ if (WEBGL.isWebGL2Available() === true) {
   } else {
     document
       .querySelector('#no-offscreen-canvas')
-      .classList
+      ?.classList
       .remove('hide');
   }
 } else {
