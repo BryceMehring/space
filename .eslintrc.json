@@ -15,7 +15,8 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "semi": "error"
+    "semi": "error",
+    "no-shadow": "error"
   },
   "ignorePatterns": [
     "webpack.config.js",

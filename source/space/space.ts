@@ -1,8 +1,9 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, Vector2, Raycaster, DirectionalLight, EventDispatcher, Event } from 'three';
+import { Scene, PerspectiveCamera, WebGLRenderer, Raycaster, DirectionalLight, EventDispatcher, Event, Vector2, Vector3 } from 'three';
 import { Planets } from './planets';
 import { loadTextures } from './textures';
 import { Ship } from './ship';
 import { SpaceStations } from './spaceStations';
+import { Mouse } from './mouse';
 
 interface SpaceParams {
   canvas: OffscreenCanvas;
@@ -14,7 +15,7 @@ export class Space extends EventDispatcher {
   private height: number;
   private scene = new Scene();
   private camera: PerspectiveCamera;
-  private mouse = new Vector2();
+  private mouse = new Mouse();
   private raycaster =  new Raycaster();
   private renderer: WebGLRenderer;
 
@@ -22,6 +23,7 @@ export class Space extends EventDispatcher {
   private spaceStations!: SpaceStations;
   private planets!: Planets;
   private dt = 0;
+  private counter = 0;
 
   constructor({ canvas }: SpaceParams) {
     super();
@@ -54,6 +56,9 @@ export class Space extends EventDispatcher {
 
     this.addEventListener('wheel', this.wheel);
     this.addEventListener('resize', this.resize);
+    this.addEventListener('mousedown', this.mousedown);
+    this.addEventListener('mouseup', this.mouseup);
+    this.addEventListener('mousemove', this.mousemove);
   }
 
   public async run(): Promise<void> {
@@ -62,18 +67,6 @@ export class Space extends EventDispatcher {
       .buildWorld();
 
     this.animate();
-  }
-
-  public resize(event: Event): void {
-    this.width = event.size.width;
-    this.height = event.size.height;
-    this.camera.aspect = this.width / this.height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.width, this.height, false);
-  }
-
-  public wheel(event: Event): void {
-    this.camera.position.z += event.deltaY;
   }
 
   get delta(): number {
@@ -122,7 +115,7 @@ export class Space extends EventDispatcher {
   }
 
   private render(): void {
-    this.raycaster.setFromCamera(this.mouse, this.camera);
+    this.raycaster.setFromCamera(this.mouse.pos, this.camera);
     /*const intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
     if (this.intersected) {
@@ -141,11 +134,49 @@ export class Space extends EventDispatcher {
       }
     }*/
 
+
+    if (!this.mouse.down && this.counter <= 1 && this.mouse.accel.length() > 0) {
+      this.counter += this.dt / 60;
+      this.mouse.accel.lerp(new Vector2(0.1, 0.1), this.counter);
+
+      this.camera.position.addScaledVector(new Vector3(-this.mouse.accel.x, this.mouse.accel.y), this.dt);
+    } else {
+      this.counter = 0;
+    }
+
     this.dispatchEvent({
       type: 'update',
       delta: this.dt,
     });
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  private mousedown(): void {
+    this.mouse.down = true;
+  }
+
+  private mouseup(): void {
+    this.mouse.down = false;
+  }
+
+  private mousemove(event: Event): void {
+    if (this.mouse.down) {
+      this.camera.position.x += -event.event.movementX * this.delta;
+      this.camera.position.y += event.event.movementY * this.delta;
+      this.mouse.accel = new Vector2(event.event.movementX, event.event.movementY);
+    }
+  }
+
+  private resize(event: Event): void {
+    this.width = event.size.width;
+    this.height = event.size.height;
+    this.camera.aspect = this.width / this.height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(this.width, this.height, false);
+  }
+
+  private wheel(event: Event): void {
+    this.camera.position.z += event.deltaY;
   }
 }
