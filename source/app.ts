@@ -1,76 +1,69 @@
 import '@stylesheet/style.scss';
-import { WEBGL } from 'three/examples/jsm/WebGL.js';
+import { validateWebGL } from './validator';
 
-const gameCanvas = document.getElementById('game') as HTMLCanvasElement;
+const error = validateWebGL();
 
-if (WEBGL.isWebGL2Available() === true) {
-  if ('transferControlToOffscreen' in gameCanvas) {
+if (!error) {
+  const gameCanvas = document.createElement('canvas');
+  gameCanvas.id = "game";
 
-    const onWindowResize = (): void => {
-      gameCanvas.setAttribute('width', window.innerWidth.toString());
-      gameCanvas.setAttribute('height', window.innerHeight.toString());
-    };
+  document.body.appendChild(gameCanvas);
 
+  const onWindowResize = (): void => {
+    gameCanvas.setAttribute('width', window.innerWidth.toString());
+    gameCanvas.setAttribute('height', window.innerHeight.toString());
+  };
+
+  onWindowResize();
+
+  const offscreen = gameCanvas.transferControlToOffscreen();
+
+  const worker = new Worker('space.worker.js', { type: 'module' });
+
+  worker.postMessage({ topic: 'canvas', canvas: offscreen }, {
+    transfer: [offscreen],
+  });
+
+  gameCanvas.addEventListener('wheel', (event) => {
+    const deltaY = event.deltaY > 0 ? 1 : -1;
+    worker.postMessage({
+      topic: 'wheel',
+      deltaY,
+    });
+  });
+
+  gameCanvas.addEventListener('mousedown', () => {
+    worker.postMessage({
+      topic: 'mousedown'
+    });
+  });
+
+  gameCanvas.addEventListener('mouseup', () => {
+    worker.postMessage({
+      topic: 'mouseup'
+    });
+  });
+
+  gameCanvas.addEventListener('mousemove', (event: MouseEvent) => {
+    worker.postMessage({
+      topic: 'mousemove',
+      event: {
+        movementX: event.movementX,
+        movementY: event.movementY,
+      }
+    });
+  });
+
+  window.addEventListener('resize', () => {
     onWindowResize();
-
-    const offscreen = gameCanvas.transferControlToOffscreen();
-
-    const worker = new Worker('./space/space.worker', { type: 'module' });
-
-    worker.postMessage({ topic: 'canvas', canvas: offscreen }, {
-      transfer: [offscreen],
+    worker.postMessage({
+      topic: 'resize',
+      size: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
     });
-
-    gameCanvas.addEventListener('wheel', (event) => {
-      const deltaY = event.deltaY > 0 ? 1 : -1;
-      worker.postMessage({
-        topic: 'wheel',
-        deltaY,
-      });
-    });
-
-    gameCanvas.addEventListener('mousedown', () => {
-      worker.postMessage({
-        topic: 'mousedown'
-      });
-    });
-
-    gameCanvas.addEventListener('mouseup', () => {
-      worker.postMessage({
-        topic: 'mouseup'
-      });
-    });
-
-    gameCanvas.addEventListener('mousemove', (event: MouseEvent) => {
-      worker.postMessage({
-        topic: 'mousemove',
-        event: {
-          movementX: event.movementX,
-          movementY: event.movementY,
-        }
-      });
-    });
-
-    window.addEventListener('resize', () => {
-      onWindowResize();
-      worker.postMessage({
-        topic: 'resize',
-        size: {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        },
-      });
-    });
-  } else {
-    document
-      .querySelector('#no-offscreen-canvas')
-      ?.classList
-      .remove('hide');
-  }
+  });
 } else {
-  document.body.appendChild(WEBGL.getWebGL2ErrorMessage());
+  document.body.appendChild(error);
 }
-
-
-
-

@@ -10,7 +10,7 @@ const onCanvas = (ev: {canvas: OffscreenCanvas}): void => {
 
     space.run();
   } else {
-    self.postMessage({
+    (self as any).postMessage({
       error: new Error('requestAnimationFrame is not supported'),
     });
   }
