@@ -1,4 +1,4 @@
-import html from '@rollup/plugin-html';
+import html, { makeHtmlAttributes } from '@rollup/plugin-html';
 import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
@@ -7,7 +7,7 @@ import url from '@rollup/plugin-url';
 import serve from 'rollup-plugin-serve';
 import { terser } from "rollup-plugin-terser";
 import path from 'path';
-import OffMainThread  from '@brycemehring/rollup-plugin-off-main-thread-es';
+import OffMainThread from '@brycemehring/rollup-plugin-off-main-thread-es';
 
 const output = {
   dir: 'dist',
@@ -47,13 +47,16 @@ if (process.env.BUILD === 'prod') {
 }
 
 const template = ({ attributes, bundle, files, publicPath, title }) => {
+  const htmlAttributes = makeHtmlAttributes(attributes.html);
+  const scriptAttributes = makeHtmlAttributes(attributes.script);
+
   const scripts = Object.keys(bundle)
     .filter((item) => !item.includes('worker'))
-    .map((item) => `<script src="${item}" type="module"></script>`);
+    .map((item) => `<script src="${item}" ${scriptAttributes}></script>`);
 
   return `
   <!DOCTYPE html>
-  <html ${attributes}>
+  <html ${htmlAttributes}>
     <head>
       <meta charset="utf-8" />
       <title>${title}</title>
