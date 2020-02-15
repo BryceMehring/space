@@ -18,7 +18,7 @@ if (!error) {
 
   const offscreen = gameCanvas.transferControlToOffscreen();
 
-  const worker = new Worker('space.worker.js', { type: 'module' });
+  const worker = new Worker('./space/space.worker.ts', { type: 'module' });
 
   worker.postMessage({ topic: 'canvas', canvas: offscreen }, {
     transfer: [offscreen],

@@ -7,10 +7,11 @@ import url from '@rollup/plugin-url';
 import serve from 'rollup-plugin-serve';
 import { terser } from "rollup-plugin-terser";
 import path from 'path';
+import OffMainThread  from '@brycemehring/rollup-plugin-off-main-thread-es';
 
 const output = {
   dir: 'dist',
-  format: 'esm',
+  format: 'es',
   sourcemap: true,
   entryFileNames: '[name]-[hash].js',
 };
@@ -32,14 +33,12 @@ const commonPlugins = [
   url(),
 ];
 
-const workerPlugins = [];
-
 if (process.env.BUILD === 'prod') {
   commonPlugins.push(
     terser(),
   );
 } else if (process.env.WATCH) {
-  workerPlugins.push(
+  commonPlugins.push(
     serve({
       open: true,
       contentBase: output.dir,
@@ -47,23 +46,36 @@ if (process.env.BUILD === 'prod') {
   );
 }
 
-module.exports = [{
-  input: 'source/app.ts',
+const template = ({ attributes, bundle, files, publicPath, title }) => {
+  const scripts = Object.keys(bundle)
+    .filter((item) => !item.includes('worker'))
+    .map((item) => `<script src="${item}" type="module"></script>`);
+
+  return `
+  <!DOCTYPE html>
+  <html ${attributes}>
+    <head>
+      <meta charset="utf-8" />
+      <title>${title}</title>
+    </head>
+    <body>
+     ${scripts}
+    </body>
+  </html>
+  `;
+}
+
+export default {
+  input: ['source/app.ts'],
   output,
   plugins: [
     ...commonPlugins,
     html({
+      template,
       title: 'Space',
     }),
+    OffMainThread({
+      include: 'source/app.ts',
+    }),
   ]
-}, {
-  input: 'source/space/space.worker.ts',
-  output: {
-    ...output,
-    entryFileNames: '[name].js',
-  },
-  plugins: [
-    ...commonPlugins,
-    ...workerPlugins,
-  ]
-}];
+};

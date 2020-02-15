@@ -13,6 +13,7 @@
     "three": "0.113.2"
   },
   "devDependencies": {
+    "@brycemehring/rollup-plugin-off-main-thread-es": "^1.0.0",
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-html": "^0.1.1",
     "@rollup/plugin-image": "^2.0.4",

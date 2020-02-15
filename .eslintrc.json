@@ -20,6 +20,7 @@
   },
   "ignorePatterns": [
     "webpack.config.js",
+    "rollup.config.js",
     "dist/**"
   ]
 }
