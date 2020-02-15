@@ -9,6 +9,8 @@ import { terser } from "rollup-plugin-terser";
 import path from 'path';
 import OffMainThread from '@brycemehring/rollup-plugin-off-main-thread-es';
 
+const publicPath = process.env.BUILD === 'prod' ? 'https://www.brycemehring.com/multiverse/' : '';
+
 const output = {
   dir: 'dist',
   format: 'es',
@@ -88,6 +90,7 @@ export default {
     ...commonPlugins,
     html({
       template,
+      publicPath,
       title: 'Space',
     }),
     OffMainThread({
