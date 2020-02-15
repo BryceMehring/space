@@ -4,10 +4,11 @@ import { validateWebGL } from './validator';
 const error = validateWebGL();
 
 if (!error) {
-  const gameCanvas = document.createElement('canvas');
-  gameCanvas.id = "game";
+  const gameCanvas = document.querySelector<HTMLCanvasElement>('#game');
 
-  document.body.appendChild(gameCanvas);
+  if (!gameCanvas) {
+    throw new Error('cannot find game canvas');
+  }
 
   const onWindowResize = (): void => {
     gameCanvas.setAttribute('width', window.innerWidth.toString());

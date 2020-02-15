@@ -29,7 +29,7 @@ const commonPlugins = [
     }]
   }),
   typescript(),
-  postcss(),
+  postcss({ extract: true }),
   url(),
 ];
 
@@ -49,22 +49,35 @@ if (process.env.BUILD === 'prod') {
 const template = ({ attributes, bundle, files, publicPath, title }) => {
   const htmlAttributes = makeHtmlAttributes(attributes.html);
   const scriptAttributes = makeHtmlAttributes(attributes.script);
+  const linkAttributes = makeHtmlAttributes(attributes.link);
 
-  const scripts = Object.keys(bundle)
-    .filter((item) => !item.includes('worker'))
-    .map((item) => `<script src="${item}" ${scriptAttributes}></script>`);
+  const scripts = (files.js || [])
+    .filter(({ fileName}) => !fileName.includes('worker'))
+    .map(({ fileName }) => `<script src="${publicPath}${fileName}"${scriptAttributes}></script>`)
+    .join('\n');
+
+  const links = (files.css || [])
+    .map(({ fileName }) => `<link href="${publicPath}${fileName}" rel="stylesheet"${linkAttributes}>`)
+    .join('\n');
 
   return `
-  <!DOCTYPE html>
-  <html ${htmlAttributes}>
-    <head>
-      <meta charset="utf-8" />
-      <title>${title}</title>
-    </head>
-    <body>
-     ${scripts}
-    </body>
-  </html>
+    <!DOCTYPE html>
+    <html ${htmlAttributes}>
+      <head>
+        <meta charset="utf-8" />
+        <title>${title}</title>
+        ${links}
+      </head>
+      <body>
+        <noscript>
+          <p class="error">
+            <strong>Enable javascript</strong>
+          </p>
+        </noscript>
+        <canvas id="game"></canvas>
+        ${scripts}
+      </body>
+    </html>
   `;
 }
 
