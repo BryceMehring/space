@@ -12,49 +12,9 @@ import { readFileSync } from 'fs';
 import template from 'lodash/template';
 
 const prodBuild = process.env.BUILD === 'prod';
-
 const publicPath = prodBuild ? 'https://www.brycemehring.com/multiverse/' : '';
-const fileNames = prodBuild ? '[name]-[hash].js' : '[name].js';
-
-const output = {
-  dir: 'dist',
-  format: 'es',
-  sourcemap: true,
-  entryFileNames: fileNames,
-  chunkFileNames: fileNames,
-};
-
-const plugins = [
-  nodeResolve(),
-  alias({
-    resolve: ['.ts'],
-    entries: [{
-      find: '@stylesheet',
-      replacement: resolve('./assets/stylesheets/'),
-    }, {
-      find: '@image',
-      replacement: resolve('./assets/images/'),
-    }]
-  }),
-  typescript({
-    clean: prodBuild,
-  }),
-  postcss({ extract: true }),
-  url(),
-];
-
-if (prodBuild) {
-  plugins.push(
-    terser(),
-  );
-} else if (process.env.WATCH) {
-  plugins.push(
-    serve({
-      open: true,
-      contentBase: output.dir,
-    }),
-  );
-}
+const fileName = prodBuild ? '[name]-[hash].js' : '[name].js';
+const assetFileName = prodBuild ? '[name]-[hash][extname]' : '[name][extname]';
 
 const compiledIndex = template(readFileSync('./assets/index.html').toString());
 
@@ -80,11 +40,35 @@ const buildTemplate = ({ attributes, bundle, files, publicPath, title }) => {
   });
 }
 
+const output = {
+  dir: 'dist',
+  format: 'es',
+  sourcemap: true,
+  preserveModules: true,
+  entryFileNames: fileName,
+  chunkFileNames: fileName,
+};
+
 export default {
   input: 'source/app.ts',
   output,
   plugins: [
-    ...plugins,
+    nodeResolve(),
+    alias({
+      resolve: ['.ts'],
+      entries: [{
+        find: '@stylesheet',
+        replacement: resolve('./assets/stylesheets/'),
+      }, {
+        find: '@image',
+        replacement: resolve('./assets/images/'),
+      }]
+    }),
+    typescript({
+      clean: prodBuild,
+    }),
+    postcss({ extract: true }),
+    url({ fileName: assetFileName }),
     html({
       template: buildTemplate,
       publicPath,
@@ -93,5 +77,10 @@ export default {
     OffMainThread({
       include: 'source/app.ts',
     }),
-  ]
+    prodBuild && terser(),
+    process.env.WATCH && serve({
+      open: true,
+      contentBase: output.dir,
+    }),
+  ],
 }
