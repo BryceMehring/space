@@ -1,23 +1,15 @@
 import { WEBGL } from 'three/examples/jsm/WebGL.js';
 
-export const validateWebGL = (): HTMLElement | undefined => {
+export const validateWebGL = (): string | null => {
   if (WEBGL.isWebGL2Available() !== true) {
-    return WEBGL.getWebGL2ErrorMessage();
+    return WEBGL.getWebGL2ErrorMessage().textContent;
   }
 
   const canvas = document.createElement('canvas');
 
   if (!canvas.transferControlToOffscreen) {
-    const errorComponent = document.createElement('div');
-    errorComponent.className = 'error';
-    errorComponent.innerHTML = `
-      <p>
-        <strong>
-          OffscreenCanvas is not supported. Please use Chrome or see
-          <a href="https://caniuse.com/#feat=mdn-api_htmlcanvaselement_transfercontroltooffscreen" target="_blank">https://caniuse.com/#feat=mdn-api_htmlcanvaselement_transfercontroltooffscreen</a>
-        </strong>
-      </p>`;
-
-    return errorComponent;
+    return 'OffscreenCanvas is not supported';
   }
+
+  return null;
 };

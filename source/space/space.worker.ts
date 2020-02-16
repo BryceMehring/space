@@ -8,10 +8,14 @@ const onCanvas = (ev: {canvas: OffscreenCanvas}): void => {
       canvas: ev.canvas,
     });
 
+    self.postMessage({
+      success: true,
+    });
+
     space.run();
   } else {
-    (self as any).postMessage({
-      error: new Error('requestAnimationFrame is not supported'),
+    self.postMessage({
+      error: 'requestAnimationFrame is not supported on workers',
     });
   }
 };
@@ -20,7 +24,7 @@ onmessage = (event): void => {
   const {topic, ...otherParams} = event.data;
   if (topic === 'canvas') {
     onCanvas(event.data);
-  } else {
+  } else if (space) {
     space.dispatchEvent({
       type: topic,
       ...otherParams

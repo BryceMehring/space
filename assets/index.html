@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ${htmlAttributes}>
+  <head>
+    <meta charset="utf-8" />
+    <title>${title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    ${links}
+  </head>
+  <body>
+    <noscript>
+      <p class="error">
+        <strong>Enable javascript</strong>
+      </p>
+    </noscript>
+    <div id="error" class="hide">
+      <p class="error">
+        <strong id="message"></strong>
+      </p>
+    </div>
+    <script nomodule>
+      document.querySelector('#error #message').textContent = 'Browser does not support ES modules';
+      document.querySelector('#error').classList.remove('hide');
+    </script>
+    <canvas id="game"></canvas>
+    ${scripts}
+  </body>
+</html>

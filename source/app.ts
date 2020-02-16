@@ -1,5 +1,6 @@
 import '@stylesheet/style.scss';
 import { validateWebGL } from './validator';
+import { showError } from './errors';
 
 const error = validateWebGL();
 
@@ -21,50 +22,60 @@ if (!error) {
 
   const worker = new Worker('./space/space.worker.ts', { type: 'module' });
 
+  const addCanvasEventListeners = (): void => {
+    gameCanvas.addEventListener('wheel', (event) => {
+      const deltaY = event.deltaY > 0 ? 1 : -1;
+      worker.postMessage({
+        topic: 'wheel',
+        deltaY,
+      });
+    });
+
+    gameCanvas.addEventListener('mousedown', () => {
+      worker.postMessage({
+        topic: 'mousedown'
+      });
+    });
+
+    gameCanvas.addEventListener('mouseup', () => {
+      worker.postMessage({
+        topic: 'mouseup'
+      });
+    });
+
+    gameCanvas.addEventListener('mousemove', (event: MouseEvent) => {
+      worker.postMessage({
+        topic: 'mousemove',
+        event: {
+          movementX: event.movementX,
+          movementY: event.movementY,
+        }
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      onWindowResize();
+      worker.postMessage({
+        topic: 'resize',
+        size: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+      });
+    });
+  };
+
+  worker.onmessage = ({ data }): void => {
+    if (data.success) {
+      addCanvasEventListeners();
+    } else if (data.error) {
+      showError(data.error);
+    }
+  };
+
   worker.postMessage({ topic: 'canvas', canvas: offscreen }, {
     transfer: [offscreen],
   });
-
-  gameCanvas.addEventListener('wheel', (event) => {
-    const deltaY = event.deltaY > 0 ? 1 : -1;
-    worker.postMessage({
-      topic: 'wheel',
-      deltaY,
-    });
-  });
-
-  gameCanvas.addEventListener('mousedown', () => {
-    worker.postMessage({
-      topic: 'mousedown'
-    });
-  });
-
-  gameCanvas.addEventListener('mouseup', () => {
-    worker.postMessage({
-      topic: 'mouseup'
-    });
-  });
-
-  gameCanvas.addEventListener('mousemove', (event: MouseEvent) => {
-    worker.postMessage({
-      topic: 'mousemove',
-      event: {
-        movementX: event.movementX,
-        movementY: event.movementY,
-      }
-    });
-  });
-
-  window.addEventListener('resize', () => {
-    onWindowResize();
-    worker.postMessage({
-      topic: 'resize',
-      size: {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      },
-    });
-  });
 } else {
-  document.body.appendChild(error);
+  showError(error);
 }
