@@ -49,7 +49,9 @@ if (!error) {
         event: {
           movementX: event.movementX,
           movementY: event.movementY,
-        }
+          x: (event.clientX / window.innerWidth) * 2 - 1,
+          y: - (event.clientY / window.innerHeight) * 2 + 1,
+        },
       });
     });
 

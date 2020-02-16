@@ -4,6 +4,7 @@ import { loadTextures } from './textures';
 import { Ship } from './ship';
 import { SpaceStations } from './spaceStations';
 import { Mouse } from './mouse';
+import { Sprite } from './sprite';
 
 interface SpaceParams {
   canvas: OffscreenCanvas;
@@ -57,6 +58,7 @@ export class Space extends EventDispatcher {
     this.addEventListener('wheel', this.wheel);
     this.addEventListener('resize', this.resize);
     this.addEventListener('mousedown', this.mousedown);
+    this.addEventListener('mousedown', this.shipRaycastDestroy);
     this.addEventListener('mouseup', this.mouseup);
     this.addEventListener('mousemove', this.mousemove);
   }
@@ -97,6 +99,11 @@ export class Space extends EventDispatcher {
 
     for (let i = 0; i < 50; ++i) {
       const ship = new Ship({space: this});
+      const destroyListener = (): void => {
+        this.scene.remove(ship);
+        ship.removeEventListener('destroy', destroyListener);
+      };
+      ship.addEventListener('destroy', destroyListener);
       this.scene.add(ship);
       this.shipList.push(ship);
     }
@@ -114,27 +121,18 @@ export class Space extends EventDispatcher {
     });
   }
 
-  private render(): void {
+  private shipRaycastDestroy(): void {
     this.raycaster.setFromCamera(this.mouse.pos, this.camera);
-    /*const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-
-    if (this.intersected) {
-      this.intersected.forEach(function (intersectedObject) {
-        intersectedObject.object.geometry.setColor({ r: 1, g: 1, b: 1 });
-      });
-      this.intersected = null;
-    }
-
-    if (this.mouseDown) {
-      if (intersects.length > 0) {
-        intersects.forEach(function (intersectedObject) {
-          intersectedObject.object.geometry.setColor({ r: 1, g: 0.2, b: 0.2 });
-        });
-        this.intersected = intersects;
+    const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+    for (const intersectedObject of intersects) {
+      const object = intersectedObject.object;
+      if (object instanceof Sprite) {
+        object.dispose();
       }
-    }*/
+    }
+  }
 
-
+  private render(): void {
     if (!this.mouse.down && this.counter <= 1 && this.mouse.accel.length() > 0) {
       this.counter += this.dt / 60;
       this.mouse.accel.lerp(new Vector2(0.1, 0.1), this.counter);
@@ -164,8 +162,9 @@ export class Space extends EventDispatcher {
     if (this.mouse.down) {
       this.camera.position.x += -event.event.movementX * this.delta;
       this.camera.position.y += event.event.movementY * this.delta;
-      this.mouse.accel = new Vector2(event.event.movementX, event.event.movementY);
+      this.mouse.accel.set(event.event.movementX, event.event.movementY);
     }
+    this.mouse.pos.set(event.event.x, event.event.y);
   }
 
   private resize(event: Event): void {

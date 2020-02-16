@@ -1,8 +1,12 @@
-import { Mesh } from 'three';
+import { Mesh, Object3D } from 'three';
 import { ColorPlane } from './colorPlane';
 import { MaterialManager } from './materialManager';
 
 export class Sprite extends Mesh {
+  parent!: Object3D & {
+    dispose?: (obj: Object3D) => void;
+  };
+
   private texture: string;
   private index: number;
   constructor(texture: string, index = 0) {
@@ -10,6 +14,15 @@ export class Sprite extends Mesh {
 
     this.texture = texture;
     this.index = index;
+  }
+
+  /**
+   * dispose
+   */
+  public dispose(): void {
+    if (this.parent.dispose) {
+      this.parent.dispose(this);
+    }
   }
 
   public setIndex(index: number): this {

@@ -18,13 +18,16 @@ export class Ship extends Object3D {
 
     const sprite = params.sprite || new Sprite('ship', MathUtils.randInt(11, 15));
 
+    const updateListener = this.update.bind(this);
+
     this.userData = {
-      speed: params.speed || MathUtils.randFloat(0.5, 2)
+      speed: params.speed || MathUtils.randFloat(0.5, 2),
+      removeListener: params.space.removeEventListener.bind(params.space, 'update', updateListener),
     };
 
     this.add(sprite);
 
-    params.space.addEventListener('update', this.update.bind(this));
+    params.space.addEventListener('update', updateListener);
   }
 
   update(event: Event): void {
@@ -41,5 +44,12 @@ export class Ship extends Object3D {
     if(this.position.y > 20 || this.position.y < -20) {
       this.position.y = 20 * (this.position.y > 0 ? -1 : 1);
     }
+  }
+
+  dispose(): void {
+    this.userData.removeListener();
+    this.dispatchEvent({
+      type: 'destroy'
+    });
   }
 }
