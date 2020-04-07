@@ -44,7 +44,6 @@ const output = {
   dir: 'dist',
   format: 'es',
   sourcemap: true,
-  preserveModules: true,
   entryFileNames: fileName,
   chunkFileNames: fileName,
 };
