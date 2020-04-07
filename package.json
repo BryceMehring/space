@@ -10,7 +10,7 @@
     "deploy": "node ./deploy.mjs"
   },
   "dependencies": {
-    "three": "0.113.2"
+    "three": "0.115.0"
   },
   "devDependencies": {
     "@brycemehring/gh-pages-deploy": "^1.0.0",
