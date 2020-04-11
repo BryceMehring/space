@@ -1,5 +1,5 @@
 import html, { makeHtmlAttributes } from '@rollup/plugin-html';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import alias from '@rollup/plugin-alias';
@@ -63,9 +63,7 @@ export default {
         replacement: resolve('./assets/images/'),
       }]
     }),
-    typescript({
-      clean: prodBuild,
-    }),
+    typescript(),
     postcss({ extract: true }),
     url({ fileName: assetFileName }),
     html({
