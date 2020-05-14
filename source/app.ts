@@ -27,7 +27,7 @@ if (!error) {
       const deltaY = event.deltaY > 0 ? 1 : -1;
       worker.postMessage({
         topic: 'wheel',
-        deltaY,
+        deltaY
       });
     });
 

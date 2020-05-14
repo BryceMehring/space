@@ -3,7 +3,7 @@ import { Space } from './space';
 let space: Space;
 
 const onCanvas = (ev: {canvas: OffscreenCanvas}): void => {
-  if (self.requestAnimationFrame) {
+  if ('requestAnimationFrame' in self) {
     space = new Space({
       canvas: ev.canvas,
     });
