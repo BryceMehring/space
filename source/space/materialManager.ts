@@ -32,13 +32,9 @@ export class MaterialManager {
       premultiplyAlpha: 'premultiply',
     });
 
-  public static loadTexture(texture: string): Promise<CanvasTexture> {
-    return new Promise<CanvasTexture>((resolve, reject) => {
-      MaterialManager.textureLoader.load(texture, (imageBitmap) => {
-        const canvasTexture = new CanvasTexture(imageBitmap as any); // TODO: fix cast to any
-        resolve(canvasTexture);
-      }, undefined, reject);
-    });
+  public static async loadTexture(texture: string): Promise<CanvasTexture> {
+    const imageBitmap = await MaterialManager.textureLoader.loadAsync(texture);
+    return new CanvasTexture(imageBitmap);
   }
 
   public static async addTexture(params: AddTextureParams): Promise<void> {
