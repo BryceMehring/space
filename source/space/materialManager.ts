@@ -26,7 +26,7 @@ export class MaterialManager {
 		color: Diffuse color of the material. (optional)
   }*/
   private static cache = new Map<string, Material[]>();
-  static textureLoader = new ImageBitmapLoader()
+  private static textureLoader = new ImageBitmapLoader()
     .setOptions({
       imageOrientation: 'flipY',
       premultiplyAlpha: 'premultiply',
