@@ -1,4 +1,4 @@
-import { CanvasTexture, MeshStandardMaterial, Material, ImageBitmapLoader, RepeatWrapping, MeshStandardMaterialParameters } from 'three';
+import { CanvasTexture, MeshStandardMaterial, Material, ImageBitmapLoader, RepeatWrapping, MeshStandardMaterialParameters, Cache } from 'three';
 
 interface AddTextureParams {
   key: string;
@@ -12,6 +12,8 @@ interface AddTextureParams {
   metalness?: number;
 }
 
+Cache.enabled = true;
+
 export class MaterialManager {
   /* params = {
 		key: unique value which identifies the texture + material
@@ -24,8 +26,7 @@ export class MaterialManager {
 		color: Diffuse color of the material. (optional)
   }*/
   private static cache = new Map<string, Material[]>();
-  private static textureCache = new Map<string, CanvasTexture>();
-  private static textureLoader = new ImageBitmapLoader()
+  static textureLoader = new ImageBitmapLoader()
     .setOptions({
       imageOrientation: 'flipY',
       premultiplyAlpha: 'premultiply',
@@ -33,15 +34,10 @@ export class MaterialManager {
 
   public static loadTexture(texture: string): Promise<CanvasTexture> {
     return new Promise<CanvasTexture>((resolve, reject) => {
-      const cachedTexture = MaterialManager.textureCache.get(texture);
-      if (cachedTexture) {
-        return resolve(cachedTexture.clone());
-      }
       MaterialManager.textureLoader.load(texture, (imageBitmap) => {
         const canvasTexture = new CanvasTexture(imageBitmap as any); // TODO: fix cast to any
-        MaterialManager.textureCache.set(texture, canvasTexture);
         resolve(canvasTexture);
-      }, reject);
+      }, undefined, reject);
     });
   }
 
