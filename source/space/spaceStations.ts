@@ -20,7 +20,7 @@ export class SpaceStations extends Group {
       spaceStation.rotation.z = MathUtils.randFloat(0, 3.14);
       const rotationSpeed = MathUtils.randInt(0, 1) ? MathUtils.randFloat(-1, 0.5) : MathUtils.randFloat(0.5, 1);
 
-      this.userData.intervals.push(setInterval(SpaceStations.updateIndex, 2000, spaceStation, 1, 3));
+      this.userData.intervals.push(setInterval(SpaceStations.updateIndex.bind(this), 2000, spaceStation, 1, 3));
 
       space.addEventListener('update', () => {
         spaceStation.rotation.z += rotationSpeed * space.delta;

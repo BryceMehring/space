@@ -55,12 +55,12 @@ export class Space extends EventDispatcher {
       }
     });
 
-    this.addEventListener('wheel', this.wheel);
-    this.addEventListener('resize', this.resize);
-    this.addEventListener('mousedown', this.mousedown);
-    this.addEventListener('mousedown', this.shipRaycastDestroy);
-    this.addEventListener('mouseup', this.mouseup);
-    this.addEventListener('mousemove', this.mousemove);
+    this.addEventListener('wheel', this.wheel.bind(this));
+    this.addEventListener('resize', this.resize.bind(this));
+    this.addEventListener('mousedown', this.mousedown.bind(this));
+    this.addEventListener('mousedown', this.shipRaycastDestroy.bind(this));
+    this.addEventListener('mouseup', this.mouseup.bind(this));
+    this.addEventListener('mousemove', this.mousemove.bind(this));
   }
 
   public async run(): Promise<void> {
