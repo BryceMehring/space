@@ -11,7 +11,7 @@
     "lint": "eslint source/"
   },
   "dependencies": {
-    "three": "0.122.0"
+    "three": "0.125.0"
   },
   "devDependencies": {
     "@brycemehring/gh-pages-deploy": "^1.1.0",
