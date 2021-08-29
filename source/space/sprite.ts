@@ -3,7 +3,7 @@ import { ColorPlane } from './colorPlane';
 import { MaterialManager } from './materialManager';
 
 export class Sprite extends Mesh {
-  parent!: Object3D & {
+  declare parent: Object3D & {
     dispose?: (obj: Object3D) => void;
   };
 

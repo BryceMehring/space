@@ -8,7 +8,7 @@ const onCanvas = (ev: {canvas: OffscreenCanvas}): void => {
       canvas: ev.canvas,
     });
 
-    self.postMessage({
+    (self as any).postMessage({
       success: true,
     });
 
@@ -16,7 +16,7 @@ const onCanvas = (ev: {canvas: OffscreenCanvas}): void => {
       .run()
       .catch((e) => console.error(e));
   } else {
-    self.postMessage({
+    (self as any).postMessage({
       error: 'requestAnimationFrame is not supported on workers',
     });
   }

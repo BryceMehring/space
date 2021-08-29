@@ -1,6 +1,9 @@
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: black;
 }
 
 #info {
@@ -10,16 +13,6 @@ body {
   width: 100%;
   position: absolute;
   color: #fff;
-}
-
-#game {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  overflow: hidden;
-  z-index: 10;
 }
 
 .error {

@@ -22,19 +22,25 @@ export class SpaceStations extends Group {
 
       this.userData.intervals.push(setInterval(SpaceStations.updateIndex.bind(this), 2000, spaceStation, 1, 3));
 
-      space.addEventListener('update', () => {
-        spaceStation.rotation.z += rotationSpeed * space.delta;
+      space.addEventListener('update', (event) => {
+        spaceStation.rotation.z += rotationSpeed * event.delta;
       });
 
       this.add(spaceStation);
     }
 
-    space.addEventListener('update', this.update.bind(this));
+    const updateListener = this.update.bind(this);
+
+    space.addEventListener('update', updateListener);
+    space.addEventListener('destroy',  () => {
+      space.removeEventListener('update', updateListener);
+      this.destroy();
+    });
 
     this.children[0].position.set(0, 0, 5);
   }
 
-  public dispose(): void {
+  public destroy(): void {
     for (const interval of this.userData.intervals) {
       clearInterval(interval);
     }

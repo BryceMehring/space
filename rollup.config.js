@@ -6,12 +6,15 @@ import alias from '@rollup/plugin-alias';
 import url from '@rollup/plugin-url';
 import serve from 'rollup-plugin-serve';
 import { terser } from "rollup-plugin-terser";
-import OffMainThread from '@brycemehring/rollup-plugin-off-main-thread-es';
+import OffMainThread from '@surma/rollup-plugin-off-main-thread';
+import Vue from 'rollup-plugin-vue';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
 import template from 'lodash/template';
+import replace from '@rollup/plugin-replace';
+import esbuild from 'rollup-plugin-esbuild';
 
-const prodBuild = process.env.BUILD === 'prod';
+const prodBuild = process.env.BUILD === 'production';
 const publicPath = prodBuild ? 'https://www.brycemehring.com/multiverse/' : '';
 const fileName = prodBuild ? '[name]-[hash].js' : '[name].js';
 const assetFileName = prodBuild ? '[name]-[hash][extname]' : '[name][extname]';
@@ -48,6 +51,16 @@ const output = {
   chunkFileNames: fileName,
 };
 
+const envVariables = {
+  'process.env.NODE_ENV':  process.env.BUILD,
+  '__VUE_OPTIONS_API__': true,
+  '__VUE_PROD_DEVTOOLS__': false
+};
+
+for (const key of Object.keys(envVariables)) {
+  envVariables[key] = JSON.stringify(envVariables[key])
+}
+
 export default {
   input: 'source/app.ts',
   output,
@@ -63,17 +76,17 @@ export default {
         replacement: resolve('./assets/images/'),
       }]
     }),
-    typescript(),
-    postcss({ extract: true }),
+    Vue(),
+    esbuild(),
+    replace(envVariables),
+    postcss({ extract: true, minimize: prodBuild }),
     url({ fileName: assetFileName }),
     html({
       template: buildTemplate,
       publicPath,
       title: 'Space',
     }),
-    OffMainThread({
-      include: 'source/app.ts',
-    }),
+    OffMainThread({ silenceESMWorkerWarning: true }),
     prodBuild && terser(),
     process.env.WATCH && serve({
       open: true,

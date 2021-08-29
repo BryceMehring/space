@@ -24,6 +24,7 @@ export class Space extends EventDispatcher {
   private spaceStations!: SpaceStations;
   private planets!: Planets;
   private dt = 0;
+  private previous: number | undefined;
   private counter = 0;
 
   constructor({ canvas }: SpaceParams) {
@@ -61,6 +62,7 @@ export class Space extends EventDispatcher {
     this.addEventListener('mousedown', this.shipRaycastDestroy.bind(this));
     this.addEventListener('mouseup', this.mouseup.bind(this));
     this.addEventListener('mousemove', this.mousemove.bind(this));
+    this.addEventListener('destroy', this.destroy.bind(this));
   }
 
   public async run(): Promise<void> {
@@ -69,6 +71,10 @@ export class Space extends EventDispatcher {
       .buildWorld();
 
     this.animate();
+  }
+
+  private destroy() {
+
   }
 
   get delta(): number {
@@ -93,9 +99,9 @@ export class Space extends EventDispatcher {
     this.spaceStations = new SpaceStations({ count: 10, space: this });
     this.scene.add(this.spaceStations);
 
-    this.planets = new Planets({count: 500, space: this});
+    // this.planets = new Planets({count: 500, space: this});
 
-    this.scene.add(this.planets);
+    // this.scene.add(this.planets);
 
     for (let i = 0; i < 50; ++i) {
       const ship = new Ship({space: this});
@@ -112,12 +118,15 @@ export class Space extends EventDispatcher {
   }
 
   private animate(previousTime?: number): void {
-    requestAnimationFrame((time: number) => {
+    requestAnimationFrame(() => {
+      const time = performance.now();
       previousTime = previousTime ?? time;
       const delta = (time - previousTime) / 1000;
+
       this.dt = delta;
-      this.render();
       this.animate(time);
+      this.render();
+
     });
   }
 
