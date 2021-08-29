@@ -6,13 +6,13 @@ import alias from '@rollup/plugin-alias';
 import url from '@rollup/plugin-url';
 import serve from 'rollup-plugin-serve';
 import { terser } from "rollup-plugin-terser";
-import OffMainThread from '@brycemehring/rollup-plugin-off-main-thread-es';
+import OffMainThread from '@surma/rollup-plugin-off-main-thread';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
 import template from 'lodash/template';
 
 const prodBuild = process.env.BUILD === 'prod';
-const publicPath = prodBuild ? 'https://www.brycemehring.com/multiverse/' : '';
+const publicPath = prodBuild ? 'https://multiverse.brycemehring.com' : '';
 const fileName = prodBuild ? '[name]-[hash].js' : '[name].js';
 const assetFileName = prodBuild ? '[name]-[hash][extname]' : '[name][extname]';
 
@@ -64,7 +64,7 @@ export default {
       }]
     }),
     typescript(),
-    postcss({ extract: true }),
+    postcss({ extract: true, minimize: prodBuild }),
     url({ fileName: assetFileName }),
     html({
       template: buildTemplate,
@@ -73,6 +73,7 @@ export default {
     }),
     OffMainThread({
       include: 'source/app.ts',
+      silenceESMWorkerWarning: true,
     }),
     prodBuild && terser(),
     process.env.WATCH && serve({

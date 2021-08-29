@@ -20,7 +20,7 @@ if (!error) {
 
   const offscreen = gameCanvas.transferControlToOffscreen();
 
-  const worker = new Worker('./space/space.worker.ts', { type: 'module' });
+  const worker = new Worker(new URL('./space/space.worker.ts', import.meta.url), { type: 'module' });
 
   const addCanvasEventListeners = (): void => {
     gameCanvas.addEventListener('wheel', (event) => {
