@@ -12,7 +12,7 @@ import { readFileSync } from 'fs';
 import template from 'lodash/template';
 
 const prodBuild = process.env.BUILD === 'prod';
-const publicPath = prodBuild ? 'https://multiverse.brycemehring.com' : '';
+const publicPath = prodBuild ? '/' : '';
 const fileName = prodBuild ? '[name]-[hash].js' : '[name].js';
 const assetFileName = prodBuild ? '[name]-[hash][extname]' : '[name][extname]';
 
