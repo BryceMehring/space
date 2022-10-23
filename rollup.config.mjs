@@ -4,12 +4,11 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import alias from '@rollup/plugin-alias';
 import url from '@rollup/plugin-url';
-import serve from 'rollup-plugin-serve';
 import { terser } from "rollup-plugin-terser";
 import OffMainThread from '@surma/rollup-plugin-off-main-thread';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
-import template from 'lodash/template';
+import template from 'lodash/template.js';
 
 const prodBuild = process.env.BUILD === 'prod';
 const publicPath = prodBuild ? '/' : '';
@@ -76,9 +75,5 @@ export default {
       silenceESMWorkerWarning: true,
     }),
     prodBuild && terser(),
-    process.env.WATCH && serve({
-      open: true,
-      contentBase: output.dir,
-    }),
   ],
 }

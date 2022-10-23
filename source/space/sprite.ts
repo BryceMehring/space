@@ -3,9 +3,9 @@ import { ColorPlane } from './colorPlane';
 import { MaterialManager } from './materialManager';
 
 export class Sprite extends Mesh {
-  parent!: Object3D & {
+  parent: Object3D & {
     dispose?: (obj: Object3D) => void;
-  };
+  } = this.parent;
 
   private texture: string;
   private index: number;

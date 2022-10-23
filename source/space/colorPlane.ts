@@ -1,4 +1,4 @@
-import { PlaneBufferGeometry, BufferAttribute } from 'three';
+import { PlaneGeometry, BufferAttribute } from 'three';
 
 interface Color {
   r: number;
@@ -6,8 +6,8 @@ interface Color {
   b: number;
 }
 
-export class ColorPlane extends PlaneBufferGeometry {
-  private bufferCount: number
+export class ColorPlane extends PlaneGeometry {
+  private bufferCount: number;
   constructor(width: number, height: number) {
     super(width, height);
 

@@ -25,8 +25,7 @@
     "@typescript-eslint/no-unsafe-call": "off"
   },
   "ignorePatterns": [
-    "webpack.config.js",
-    "rollup.config.js",
+    "rollup.config.mjs",
     "dist/**"
   ]
 }

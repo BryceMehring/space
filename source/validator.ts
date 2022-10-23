@@ -1,5 +1,4 @@
-import { WEBGL } from 'three/examples/jsm/WebGL.js';
-
+import WEBGL from 'three/examples/jsm/capabilities/WebGL';
 const offscreenCanvasErrorMessage = 'OffscreenCanvas is not supported';
 
 export const validateWebGL = (): string | null => {

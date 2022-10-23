@@ -1,4 +1,4 @@
-import { SphereBufferGeometry, InstancedMesh, Matrix4, MathUtils, Vector3, Quaternion, Group, Object3D } from 'three';
+import { SphereGeometry, InstancedMesh, Matrix4, MathUtils, Vector3, Quaternion, Group, Object3D } from 'three';
 import { MaterialManager } from './materialManager';
 import { planets as planetTextures } from './textures';
 import { Space } from './space';
@@ -15,7 +15,7 @@ export class Planets extends Group {
     const q = new Quaternion();
     this.position.z = -300;
     for (let i = 0, l = planetTextures.length; i < l; i++) {
-      const starsGeometry = new SphereBufferGeometry(1, 32, 32);
+      const starsGeometry = new SphereGeometry(1, 32, 32);
       const material = MaterialManager.getMaterial(planetTextures[i]);
 
       const mesh = new InstancedMesh(starsGeometry, material, params.count);

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "rm -rf dist && rollup -c -w --environment WATCH",
+    "start": "rm -rf dist && npm run serve & rollup -c -w --environment WATCH && kill $!",
+    "serve": "serve dist",
     "build:dev": "rm -rf dist && rollup -c",
     "build": "rm -rf dist && rollup -c --environment BUILD:prod",
     "predeploy": "npm run build",
@@ -11,29 +12,29 @@
     "lint": "eslint source/"
   },
   "dependencies": {
-    "three": "~0.132.2"
+    "three": "~0.145.0"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^3.1.5",
-    "@rollup/plugin-html": "^0.2.3",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "@rollup/plugin-typescript": "^8.2.5",
-    "@rollup/plugin-url": "^6.1.0",
+    "@rollup/plugin-alias": "^4.0.2",
+    "@rollup/plugin-html": "^1.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-typescript": "^9.0.2",
+    "@rollup/plugin-url": "^8.0.1",
     "@surma/rollup-plugin-off-main-thread": "^2.2.2",
-    "@types/three": "^0.131.0",
-    "@typescript-eslint/eslint-plugin": "^4.29.3",
-    "@typescript-eslint/parser": "^4.29.3",
-    "eslint": "^7.32.0",
+    "@types/three": "^0.144.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
+    "eslint": "^8.23.0",
     "lodash": "^4.17.21",
     "postcss": "^8.3.6",
     "rollup": "^2.56.3",
     "rollup-plugin-postcss": "^4.0.1",
-    "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.38.2",
-    "typescript": "~4.3.0"
+    "serve": "^14.0.1",
+    "typescript": "~4.8.4"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16"
   }
 }
