@@ -4,18 +4,11 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
 import alias from '@rollup/plugin-alias';
 import url from '@rollup/plugin-url';
-import { terser } from "rollup-plugin-terser";
+import terser from '@rollup/plugin-terser';
 import OffMainThread from '@surma/rollup-plugin-off-main-thread';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
 import template from 'lodash/template.js';
-
-const prodBuild = process.env.BUILD === 'prod';
-const publicPath = prodBuild ? '/' : '';
-const fileName = prodBuild ? '[name]-[hash].js' : '[name].js';
-const assetFileName = prodBuild ? '[name]-[hash][extname]' : '[name][extname]';
-
-const compiledIndex = template(readFileSync('./assets/index.html').toString());
 
 const buildTemplate = ({ attributes, bundle, files, publicPath, title }) => {
   const htmlAttributes = makeHtmlAttributes(attributes.html);
@@ -37,7 +30,14 @@ const buildTemplate = ({ attributes, bundle, files, publicPath, title }) => {
     links,
     scripts,
   });
-}
+};
+
+const prodBuild = process.env.BUILD === 'prod';
+const publicPath = prodBuild ? '/' : '';
+const fileName = prodBuild ? '[name]-[hash].js' : '[name].js';
+const assetFileName = prodBuild ? '[name]-[hash][extname]' : '[name][extname]';
+
+const compiledIndex = template(readFileSync('./assets/index.html').toString());
 
 const output = {
   dir: 'dist',
@@ -76,4 +76,4 @@ export default {
     }),
     prodBuild && terser(),
   ],
-}
+};
