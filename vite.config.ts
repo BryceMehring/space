@@ -11,14 +11,9 @@ export default defineConfig({
     format: 'es',
   },
   resolve: {
-    alias: [
-      {
-        find: '@stylesheet',
-        replacement: resolve('./assets/stylesheets/'),
-      }, {
-        find: '@image',
-        replacement: resolve('./assets/images/'),
-      }
-    ]
+    alias: {
+      '@stylesheet': resolve('./assets/stylesheets/'),
+      '@image': resolve('./assets/images/'),
+    },
   },
 });
