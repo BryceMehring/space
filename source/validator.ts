@@ -1,11 +1,6 @@
-import WEBGL from 'three/examples/jsm/capabilities/WebGL';
 const offscreenCanvasErrorMessage = 'OffscreenCanvas is not supported';
 
 export const validateWebGL = (): string | null => {
-  if (WEBGL.isWebGL2Available() !== true) {
-    return WEBGL.getWebGL2ErrorMessage().textContent;
-  }
-
   const canvas = document.createElement('canvas');
 
   if (!canvas.transferControlToOffscreen) {

@@ -25,6 +25,7 @@ export class Space extends EventDispatcher {
   private planets!: Planets;
   private dt = 0;
   private counter = 0;
+  private previousTime: number | undefined = 0;
 
   constructor({ canvas }: SpaceParams) {
     super();
@@ -35,16 +36,10 @@ export class Space extends EventDispatcher {
     this.camera = new PerspectiveCamera(90, this.width / this.height, 0.1, 1000);
     this.camera.position.z = 8;
 
-    const context = this.canvas.getContext( 'webgl2', { alpha: false, } );
-
-    if (!context) {
-      throw new Error('Cannot create webgl2 context');
-    }
-
     this.renderer = new WebGLRenderer({
-      context: context,
       canvas: this.canvas,
       antialias: true,
+      alpha: false,
     });
 
     this.resize({
@@ -111,14 +106,11 @@ export class Space extends EventDispatcher {
     return this;
   }
 
-  private animate(previousTime?: number): void {
-    requestAnimationFrame((time: number) => {
-      previousTime = previousTime ?? time;
-      const delta = (time - previousTime) / 1000;
-      this.dt = delta;
-      this.render();
-      this.animate(time);
-    });
+  private animate(time: DOMHighResTimeStamp = 0): void {
+    requestAnimationFrame(this.animate.bind(this));
+    this.dt = (time - (this.previousTime || time)) / 1000;
+    this.previousTime = time;
+    this.render();
   }
 
   private shipRaycastDestroy(): void {

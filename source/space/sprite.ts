@@ -1,5 +1,4 @@
-import { Mesh, Object3D } from 'three';
-import { ColorPlane } from './colorPlane';
+import { Mesh, Object3D, PlaneGeometry } from 'three';
 import { MaterialManager } from './materialManager';
 
 export class Sprite extends Mesh {
@@ -10,7 +9,7 @@ export class Sprite extends Mesh {
   private texture: string;
   private index: number;
   constructor(texture: string, index = 0) {
-    super(new ColorPlane(1, 1), MaterialManager.getMaterial(texture, index));
+    super(new PlaneGeometry(1, 1), MaterialManager.getMaterial(texture, index));
 
     this.texture = texture;
     this.index = index;
