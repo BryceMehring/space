@@ -12,7 +12,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@stylesheet': resolve('./assets/stylesheets/'),
       '@image': resolve('./assets/images/'),
     },
   },

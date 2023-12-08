@@ -1,4 +1,3 @@
-import '@stylesheet/style.scss';
 import { validateWebGL } from './validator';
 import { showError } from './errors';
 
